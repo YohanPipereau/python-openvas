@@ -28,8 +28,9 @@ print >>sys.stderr, 'client : "%s"' % message #prompt
 sock.sendall(message)
 
 #Reading in the socket
-data = sock.recv(4096)
-print >>sys.stderr, 'received "%s"' % data
+while true:
+    data = sock.recv(4096)
+    print >>sys.stderr, 'received "%s"' % data
 
 #to print out the configuration: CLIENT <|> NVT_INFO
 
