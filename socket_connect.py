@@ -1,4 +1,5 @@
 import os
+import sys
 import socket
 
 #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
@@ -19,10 +20,18 @@ except socket.error, msg:
     print >>sys.stderr, msg
     sys.exit(1)
 
-##Writing and Reading the socket
-message = "temporary variable"
+##Writing and Reading in the socket
+#Wiriting in the socket
+sock.sendall("< OTP/2.0 >")# to keep the connection to the socket opened you need to write < OTP/2.0 >
+message = "CLIENT <|> NVT_INFO"
 print >>sys.stderr, 'client : "%s"' % message #prompt
 sock.sendall(message)
+
+#Reading in the socket
+data = sock.recv(4096)
+print >>sys.stderr, 'received "%s"' % data
+
+#to print out the configuration: CLIENT <|> NVT_INFO
 
 
 
