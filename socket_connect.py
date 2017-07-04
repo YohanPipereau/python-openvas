@@ -37,16 +37,3 @@ def recv_msg(sock):
 
 Thread(target=send_msg, args=(sock,)).start()
 Thread(target=recv_msg, args=(sock,)).start()
-
-#to print out the configuration: CLIENT <|> NVT_INFO
-
-
-
-#to print out the configuration: CLIENT <|> NVT_INFO
-
-
-
-
-
-
-# to keep the connection to the socket opened you need to write < OTP/2.0 >
