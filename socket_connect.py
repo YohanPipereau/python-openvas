@@ -21,16 +21,26 @@ except socket.error, msg:
     sys.exit(1)
 
 ##Writing and Reading in the socket
-#Wiriting in the socket
-sock.sendall("< OTP/2.0 >")# to keep the connection to the socket opened you need to write < OTP/2.0 >
-message = "CLIENT <|> NVT_INFO"
-print >>sys.stderr, 'client : "%s"' % message #prompt
-sock.sendall(message)
+#Writing in the socket
+#message = "CLIENT <|> NVT_INFO"
+def send_msg(sock):
+    sock.send("< OTP/2.0 >") #to keep the connection opened to the socket you need to write < OTP/2.0 > at the begining
+    while True:
+        data = sys.stdin.readline()
+        sock.send(data)
 
-#Reading in the socket
-while true:
-    data = sock.recv(4096)
-    print >>sys.stderr, 'received "%s"' % data
+#Reading in the socket$
+def recv_msg(sock):
+    while True:
+        data = sock.recv(1024)
+        sys.stdout.write(data)
+
+Thread(target=send_msg, args=(sock,)).start()
+Thread(target=recv_msg, args=(sock,)).start()
+
+#to print out the configuration: CLIENT <|> NVT_INFO
+
+
 
 #to print out the configuration: CLIENT <|> NVT_INFO
 
