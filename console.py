@@ -1,28 +1,33 @@
+import sys
 
+for arg in sys.argv:
+    #Get all arguments given to python, the separator for the parsing is a single space
+    if arg == "--help" or "-h":
+        print("""
+        -h : get some help
+        -v : verbose mode, output the report of the scan in the shell
+        -vv : ultra verbose mode, Output the whole OTP communication in the SHELL
+        -o : specify the path to the output file
+        -l : List the families available (ex: Windows, Linux, Cisco, etc)
+        -f : Specify families for the families for the scan
+        -s : specify the unix socket for the communication for the scanner (default is /var/run/openvassd.sock)
+        -i : IP of the host to scan
 
-print("""
-1) Display Scanner configuration infos
-2) List NVT vulnerabilities with their id, families, etc...
-3) Run a scan
-4) Get shell access to the scanner (speak OTP please, more info in man.md...)
-""")
+        --help : get some help
+        --verbose : verbose mode, Output the whole OTP communication in the SH0ELL
+        --list-families : List the families available (ex: Windows, Linux, Cisco, etc)
+        --scan-families : Scan the families given in arguments and separated by a coma ,
+        --list-oid : Output the list of the oid, name of vulnerabilities, and info about it
+        --socket : specify the unix socket for the communication for the scanner (default is /var/run/openvassd.sock)
+        --email : send the report to someone@example.com by email
+        --ip : IP of the host to scan
+        """)
+    if arg == "-v" or "--verbose":
 
+    if arg == "-vv":
 
-try:
-    choice=int(input("Enter your option: "))
-    if choice == 1:
-        #Run the Display scanner information object
-        print("not yet")
-    if choice == 2:
-        #Run the List NVT vulerabilities object
-        print("not yet")
-    if choice == 3:
-        #variables Required: hosts_ip, ports
-        #Run a scan
-        print("not yet")
-    if choice == 4:
-        #
-        print("not yet")
+    if arg == "-o":
 
-except (NameError, SyntaxError):
-    print "You should not run the program while drunk, please enter an integer"
+    if arg == "-l":
+
+    if arg == "-f":
