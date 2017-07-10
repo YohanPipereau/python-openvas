@@ -1,6 +1,7 @@
 #This aims at parsing the CLI args
 import getopt
 import sys
+import ParseOid
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
@@ -15,7 +16,7 @@ except getopt.GetoptError:
     sys.exit(2)
 for opt,arg in opts:
     if opt in ('f','list-families'):
-        print("À faire")
+
 
     elif opt in ("-h", "--help"):
         print("""
@@ -26,7 +27,6 @@ for opt,arg in opts:
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m -o \033[0m  Specify the path to the output file
     \033[1m -v \033[0m  Verbose mode, output the report of the scan in the shell
-    \033[1m -s \033[0m  Specify the unix socket for the communication for the scanner (default is /var/run/openvassd.sock)
 
 
     \033[1m --help \033[0m          get some help
@@ -34,7 +34,6 @@ for opt,arg in opts:
     \033[1m --list-families \033[0m List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
     \033[1m --list-oid \033[0m      Output the list of the oid, name of vulnerabilities, and info about it
-    \033[1m --socket \033[0m        specify the unix socket for the communication for the scanner (default is /var/run/openvassd.sock)
     \033[1m --email \033[0m         send the report to someone@example.com by email
     \033[1m --output \033[0m        specify the path to the output file
     \033[1m --ip \033[0m            IP of the host to scan
