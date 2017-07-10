@@ -32,7 +32,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 * Run an attack (scan) on an IP:
 < OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
-plugin_zet <|> 1.3.6.1.4.1.25623.1.0.810330
+plugin_set <|> 1.3.6.1.4.1.25623.1.0.810330
 port_range <|> value_of_port
 <|> CLIENT
 CLIENT <|> LONG_ATTACK

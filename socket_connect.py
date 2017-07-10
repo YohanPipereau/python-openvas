@@ -1,9 +1,11 @@
+# This file aims interacting with the socket for reading & writing
+
 import os
 import sys
 from threading import Thread
 import socket
 
-class Socket
+class SocketConnect
 
     #Default Constructor for console>shell
     def __init__(self):
