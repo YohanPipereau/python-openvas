@@ -1,7 +1,8 @@
 #This aims at parsing the CLI args
 import getopt
 import sys
-import ParseOid
+from threading import Thread
+import parse_oid
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
@@ -15,7 +16,9 @@ except getopt.GetoptError:
     """)
     sys.exit(2)
 for opt,arg in opts:
-    if opt in ('f','list-families'):
+    if opt in ('-l','list-families'):
+        familyList = ParseOid()
+        familyList.send_msg()
 
 
     elif opt in ("-h", "--help"):

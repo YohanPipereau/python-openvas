@@ -2,43 +2,33 @@
 
 import os
 import sys
-from threading import Thread
 import socket
 
 class SocketConnect:
 
     #Default Constructor for console>shell
-    def __init__(self, message):
-        self.unixsocket_path = "/var/run/openvassd.sock" #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
-        self.message = message #message is sent to the socket
+    def __init__(self,message):
+        unixsocket_path = "/var/run/openvassd.sock" #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
+        self.message=message
 
-        ##Check the existence of the socket
+        ##Create a socket object sock and connect the client to it (the server is openvas-scanner)
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        print >>sys.stderr, 'connecting to %s' % unixsocket_path #make sure any input goes to sderr
         try:
-            os.path.isfile(self.unixsocket_path)
-        except OSError:
-            print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
-
-            ##Instantiate the socket and connect the client to it (the server is openvas-scanner)
-            self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            print >>sys.stderr, 'connecting to %s' % unixsocket_path #make sure any input goes to sderr
-            try:
-                self.sock.connect(unixsocket_path)
-            except socket.error, msg:
-                print >>sys.stderr, msg
-                sys.exit(1)
-
-
-
+            sock.connect(unixsocket_path)
+        except socket.error, msg:
+            print >>sys.stderr, msg
+            sys.exit(1)
 
     #Writing in the socket
-    def send_msg(self):
+    def send_msg(sock,self):
         for line in self.message:
             sock.send(line)
             sys.stdout.write(line)
             time.sleep(.0100)
 
     #Reading in the socket and output in sdtout
-    def recv_msg(self):
+    def recv_msg(sock):
         while True:
-            data = self.sock.recv(1)
+            data = sock.recv(1)
             sys.stdout.write(data)

@@ -1,6 +1,9 @@
 #This file aims at parsing the NVT_INFO output to get all the oid
 
-class ParseOid:
+import socket_connect
+from threading import Thread
+
+class ParseOid(SocketConnect):
 
     def __init__(self):
         message="""
@@ -8,18 +11,9 @@ class ParseOid:
         CLIENT <|> NVT_INFO <|> CLIENT
         CLIENT <|> COMPLETE_LIST <|> CLIENT
         """
-        
-    """
-    if match_plugin[cmpt] == data and cmpt <= len(match_plugin):
-        cmpt=cmpt+1
-        msg.append(data)
-        if msg == match_plugin:
-            #Appelle la méthode parse_oid which parse oid and put in the proper families
-    else:
-        match_plugin = "SERVER <|> PLUGIN_LIST <|>"
-        msg=""
-        cmpt=0
-    """
+
+    #def FamilyParser():
+
     #parser plugin:
 
 
