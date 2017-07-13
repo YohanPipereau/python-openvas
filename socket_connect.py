@@ -21,14 +21,14 @@ class SocketConnect:
             sys.exit(1)
 
     #Writing in the socket
-    def send_msg(sock,self):
+    def send_msg(self):
         for line in self.message:
             sock.send(line)
             sys.stdout.write(line)
             time.sleep(.0100)
 
     #Reading in the socket and output in sdtout
-    def recv_msg(sock):
+    def recv_msg(self):
         while True:
             data = sock.recv(1)
             sys.stdout.write(data)

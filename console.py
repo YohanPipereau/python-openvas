@@ -2,6 +2,7 @@
 import getopt
 import sys
 from threading import Thread
+from parse_oid import ParseOid
 import parse_oid
 
 try:
