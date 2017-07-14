@@ -15,17 +15,20 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
     #print >>sys.stderr, 'connecting to %s' % unixsocket_path #make sure any input goes to sderr
     sock.connect(unixsocket_path)
 
-    def send_msg(sock):
-        for line in message:
-            sock.send(line)
+    def send_msg(sock,message):
+        for line in message.splitlines(True):
+	    sock.send(line)
             sys.stdout.write(line)
-            time.sleep(0.1)
+            time.sleep(.10)
 
     def recv_msg(sock):
+	global outputVar
+	outputFile=""
         while True:
-            data = sock.recv(1024)
+            data = sock.recv(1)
             sys.stdout.write(data)
+	    outputVar.append(data)
 
     #Use threads to allow concurrent access to the socket instead of linear access
-    Thread(target=send_msg, args=(sock,)).start()
+    Thread(target=send_msg, args=(sock,message)).start()
     Thread(target=recv_msg, args=(sock,)).start()

@@ -1,9 +1,7 @@
 #This aims at parsing the CLI args
-import getopt
-import sys
+import getopt, sys
 from threading import Thread
-from parse_oid import ParseOid
-import parse_oid
+from SocketConnect import *
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
@@ -18,9 +16,11 @@ except getopt.GetoptError:
     sys.exit(2)
 for opt,arg in opts:
     if opt in ('-l','list-families'):
-        familyList = ParseOid()
-        familyList.send_msg()
-
+	message= """< OTP/2.0 >
+CLIENT <|> NVT_INFO <|> CLIENT
+CLIENT <|> COMPLETE_LIST <|> CLIENT"""
+	SocketConnect(message)
+	print(outputFile)
 
     elif opt in ("-h", "--help"):
         print("""
