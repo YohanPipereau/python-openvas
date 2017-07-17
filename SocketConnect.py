@@ -1,4 +1,4 @@
-import os, socket, time, sys, threading
+import os, socket, time, sys, threading, select
 from threading import Thread
 #from ParseOid import *
 
@@ -13,7 +13,6 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 
     ##Instantiate the socket and connect the client to it (the server is openvas-scanner)
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    #print >>sys.stderr, 'connecting to %s' % unixsocket_path #make sure any input goes to sderr
     sock.connect(unixsocket_path)
     global event
     event = threading.Event()
@@ -34,62 +33,18 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
         while True:
 	    global event
 	    event.wait() #block sender until receiver send set
-            data = sock.recv(1024) #receive buffer of 1024 bits
-            #sys.stdout.write(data)
-	    outputVar = outputVar + data #We put everything read into this Var
-	    outputList = outputVar.splitlines(True)
-	    outputLastLine = outputList.pop()
-	    #print(len(outputList))
-	    print(outputLastLine)
-
-	    #Detect the matching section we want to parse
-	    #if data == parserMatch:
-	    # 	ParsingTrigger = True
-	    #if parsingTrigger == True:
-	    ##Every object has a parser which is called if we detect a line which match parserMatch
-	    #    object.parser(outputLastLine) 
-	    #knowing the end of the matching section
-
-#	    if outputLastLine == "<|> SERVER":
-#		ParsingTrigger = False
-#		return("""
-#l
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#o
-#l
-#""")
-
+	    do_read = False
+	    try:
+	        r, _, _  = select.select([sock], [], [], 1) #select syscall, check if data arrived
+	        do_read = bool(r) #boolean false if nothing read last second
+	    except socket.error:
+	       pass
+	    if do_read:
+	        outputVar += sock.recv(1024)
+		print(len(outputVar))
+	    else:
+		return(outputVar)
+	
     #Use threads to allow concurrent access to the socket instead of linear access
     Thread(target=send_msg, args=(sock,message)).start()
     Thread(target=recv_msg, args=(sock,)).start()
