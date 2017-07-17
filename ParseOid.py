@@ -1,8 +1,9 @@
 #This file aims at parsing the NVT_INFO output to get all the oid
 
-class ParseOid(inputText):
-    def __init__(self):
-	self.lol="lol"
+class ParseOid(Parse):
+
+    def __init__(self,oidMessage):
+	self.oidMessage = oidMessage #oidMessage is outputVar
 
     def Parser(self,outputLastLine):
 	oidList=outputLastLine.split("<|>")

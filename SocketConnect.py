@@ -25,7 +25,6 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
             sys.stdout.write(line)
 	    time.sleep(0.1) #wait a bit cause the receiver is a bit long to write
 	    event.clear()
-            #time.sleep(.05)
 	    event.set()
 
     def recv_msg(sock):
@@ -41,7 +40,6 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 	       pass
 	    if do_read:
 	        outputVar += sock.recv(1024)
-		print(len(outputVar))
 	    else:
 		return(outputVar)
 	
