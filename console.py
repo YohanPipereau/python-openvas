@@ -20,7 +20,10 @@ for opt,arg in opts:
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
-	SocketConnect(message)
+	outputVar = SocketConnect(message)
+	oid = ParseOid(outputVar)
+	
+	return(0) #if list-families, nothing else to do
 
     elif opt in ("-h", "--help"):
         print("""
