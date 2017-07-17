@@ -19,15 +19,17 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
         for line in message.splitlines(True):
 	    sock.send(line)
             sys.stdout.write(line)
-            time.sleep(.10)
+            time.sleep(.05)
 
     def recv_msg(sock):
-	global outputVar
-	outputFile=""
+	outputVar = ""
         while True:
-            data = sock.recv(1)
+            data = sock.recv(1024)
             sys.stdout.write(data)
-	    outputVar.append(data)
+	    outputVar = outputVar + data
+	    outputList = outputVar.splitlines(True)
+	    if outputList[len(outputList) - 1] == "<|> SERVER":
+		return(outputVar)
 
     #Use threads to allow concurrent access to the socket instead of linear access
     Thread(target=send_msg, args=(sock,message)).start()

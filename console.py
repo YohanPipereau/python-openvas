@@ -18,9 +18,9 @@ for opt,arg in opts:
     if opt in ('-l','list-families'):
 	message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
-CLIENT <|> COMPLETE_LIST <|> CLIENT"""
+CLIENT <|> COMPLETE_LIST <|> CLIENT
+"""
 	SocketConnect(message)
-	print(outputFile)
 
     elif opt in ("-h", "--help"):
         print("""
