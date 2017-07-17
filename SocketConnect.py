@@ -1,6 +1,6 @@
-import os, socket, time, sys
+import os, socket, time, sys, threading
 from threading import Thread
-import threading
+#from ParseOid import *
 
 def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
     #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
@@ -34,12 +34,61 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
         while True:
 	    global event
 	    event.wait() #block sender until receiver send set
-            data = sock.recv(1024)
-            sys.stdout.write(data)
-	    outputVar = outputVar + data
+            data = sock.recv(1024) #receive buffer of 1024 bits
+            #sys.stdout.write(data)
+	    outputVar = outputVar + data #We put everything read into this Var
 	    outputList = outputVar.splitlines(True)
-	    if outputList[len(outputList) - 1] == "<|> SERVER":
-		return(outputVar)
+	    outputLastLine = outputList.pop()
+	    #print(len(outputList))
+	    print(outputLastLine)
+
+	    #Detect the matching section we want to parse
+	    #if data == parserMatch:
+	    # 	ParsingTrigger = True
+	    #if parsingTrigger == True:
+	    ##Every object has a parser which is called if we detect a line which match parserMatch
+	    #    object.parser(outputLastLine) 
+	    #knowing the end of the matching section
+
+#	    if outputLastLine == "<|> SERVER":
+#		ParsingTrigger = False
+#		return("""
+#l
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#o
+#l
+#""")
 
     #Use threads to allow concurrent access to the socket instead of linear access
     Thread(target=send_msg, args=(sock,message)).start()
