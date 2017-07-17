@@ -2,6 +2,7 @@
 import getopt, sys
 from threading import Thread
 from SocketConnect import *
+import ParseOid
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
@@ -21,9 +22,8 @@ CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
 	outputVar = SocketConnect(message)
-	oid = ParseOid(outputVar)
-	
-	return(0) #if list-families, nothing else to do
+	parserMatch = "SERVER <|> PLUGIN_LIST <|>"
+	oid = ParseOid(parserMatch,outputVar)
 
     elif opt in ("-h", "--help"):
         print("""
