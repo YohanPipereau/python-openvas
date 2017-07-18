@@ -22,8 +22,9 @@ CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
 	outputVar = SocketConnect(message)
-	parserMatch = "SERVER <|> PLUGIN_LIST <|>"
+	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
 	oid = ParseOid(parserMatch,outputVar)
+	oid.SectionParser()
 
     elif opt in ("-h", "--help"):
         print("""
