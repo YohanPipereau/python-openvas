@@ -1,5 +1,5 @@
 #This aims at parsing the CLI args
-import getopt, sys
+import getopt, sys, signal
 from threading import Thread
 from SocketConnect import *
 from ParseOid import *
@@ -25,6 +25,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
 	oid = ParseOid(parserMatch,outputVar)
 	oid.SectionParser()
+	sys.exit(0)
 
     elif opt in ("-h", "--help"):
         print("""
@@ -34,11 +35,9 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m -i \033[0m  IP of the host to scan
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m -o \033[0m  Specify the path to the output file
-    \033[1m -v \033[0m  Verbose mode, output the report of the scan in the shell
 
 
     \033[1m --help \033[0m          get some help
-    \033[1m --verbose \033[0m       verbose mode, Output the whole OTP communication in the SH0ELL
     \033[1m --list-families \033[0m List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
     \033[1m --list-oid \033[0m      Output the list of the oid, name of vulnerabilities, and info about it
@@ -50,4 +49,12 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     First, list the available families: python console.py -l
     Then, scan the host with the wanted families:
         """)
-        sys.exit(1)
+        sys.exit(0)
+
+#    elif opt in ("-i", "--ip"):
+#	if( 
+#	except Exception("The format of the IP is not valid (IPv6 and IPv4) handled !")
+	    
+		
+    elif opt in ("-f","--scan-families"):
+	print("CERN is awesome. My school sucks!!")
