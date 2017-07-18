@@ -1,7 +1,5 @@
 import os, socket, time, sys, threading, select, multiprocessing
-from multiprocessing import Process
-from threading import Thread
-#from ParseOid import *
+from multiprocessing import Process, Queue
 
 def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
     #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
@@ -24,12 +22,11 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 	    global event
 	    event.set()
 	    sock.send(line)
-	    sys.stdout.write(line)
 	    time.sleep(0.1) #wait a bit cause the receiver is a bit long to write
 	    event.clear()
 	    event.set()
 
-    def recv_msg(sock):
+    def recv_msg(sock,q):
 	outputVar = ""
         while True:
 	    global event
@@ -43,19 +40,19 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 	       pass
 	    if do_read:
 	        outputVar += sock.recv(1024)
-		print(len(outputVar))
 	    else:
-		global copy
-		copy = outputVar
-		return(outputVar)
-	
+		q.put(outputVar)
+		sys.exit(0)
+
     #Use threads to allow concurrent access to the socket instead of linear access
-    sendThread = Process(target=send_msg, args=(sock,message))
-    receiveThread = Process(target=recv_msg, args=(sock,))
+    sendProcess = Process(target=send_msg, args=(sock,message))
+    q = Queue()
+    receiveProcess = Process(target=recv_msg, args=(sock,q))
    
-    sendThread.start()
-    receiveThread.start()
-    sendThread.join() #block the main thread until sendThread is over
-    receiveThread.join()
+    sendProcess.start()
+    receiveProcess.start()
+    copy = q.get()
+    sendProcess.join() #block the main thread until sendProcess is over
+    receiveProcess.join()
     
     return(copy)
