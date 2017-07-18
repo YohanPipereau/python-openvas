@@ -9,7 +9,7 @@ class Parse:
     	    if line == parserMatch:
 		ParsingTrigger = True
 	 #Every object has a parser which is called if we detect a line which match parserMatch
-	    if parsingTrigger == True
+	    if parsingTrigger == True:
 		    self.Parser(line)
             #Detect end of the matching section
 	    if line == "<|> SERVER":

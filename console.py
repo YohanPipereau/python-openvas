@@ -2,7 +2,7 @@
 import getopt, sys
 from threading import Thread
 from SocketConnect import *
-import ParseOid
+from ParseOid import *
 
 try:
     argv=sys.argv[1:] #put the arguments in a string

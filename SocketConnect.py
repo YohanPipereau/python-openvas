@@ -18,11 +18,11 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
     event = threading.Event()
 
     def send_msg(sock,message):
+	print("Wait for job to be completed, it can take a few seconds ...")
         for line in message.splitlines(True):
 	    global event
 	    event.set()
 	    sock.send(line)
-            sys.stdout.write(line)
 	    time.sleep(0.1) #wait a bit cause the receiver is a bit long to write
 	    event.clear()
 	    event.set()
@@ -34,15 +34,24 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 	    event.wait() #block sender until receiver send set
 	    do_read = False
 	    try:
-	        r, _, _  = select.select([sock], [], [], 1) #select syscall, check if data arrived
+	        r, _, _  = select.select([sock], [], [], 3) #select syscall, check if data arrived
+		#3 is a timeout of 3s which can be changed if the script stop too early
 	        do_read = bool(r) #boolean false if nothing read last second
 	    except socket.error:
 	       pass
 	    if do_read:
 	        outputVar += sock.recv(1024)
 	    else:
+		global copy
+		copy = outputVar
 		return(outputVar)
 	
     #Use threads to allow concurrent access to the socket instead of linear access
-    Thread(target=send_msg, args=(sock,message)).start()
-    Thread(target=recv_msg, args=(sock,)).start()
+    sendThread = Thread(target=send_msg, args=(sock,message))
+    receiveThread = Thread(target=recv_msg, args=(sock,))
+   
+    sendThread.start()
+    receiveThread.start()
+    sendThread.join()
+    receiveThread.join()
+    return(copy)

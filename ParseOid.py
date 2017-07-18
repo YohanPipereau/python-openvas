@@ -1,8 +1,8 @@
 #This file aims at parsing the NVT_INFO output to get all the oid
-
+from Parse import *
 
 class ParseOid(Parse):
-    def __init__(self,parserMatch,scanData)
+    def __init__(self,parserMatch,scanData):
         self.scanData = scanData
         self.parserMatch = parserMatch #when parserMatch is detected -> match section begins
 
