@@ -22,11 +22,13 @@ try:
     #parse options/arguments given to the program. Use : to indicate a string after the option, and = for the long options
     #the output of getopt is a tuple of list ([],[]). This list contains tuple themselves
 except getopt.GetoptError:
-    print("""Sorry, the given option does not exist or is not used properly
-    Please get some help by running the following arguments: \033[1m -h \033[0m or \033[1m --help \033[0m. """)
+    print("""\033[1m\033[31mUnknown option or missing argument ! \033[0m
+Sorry, the given option does not exist or is not used properly
+Please get some help by running the following arguments: \033[1m -h \033[0m or \033[1m --help \033[0m. """)
     sys.exit(2)
 for opt,arg in opts:
     if opt in ('-l','list-families'):
+	print("Wait for job to be completed, it can take a few seconds ...")
 	message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -62,10 +64,33 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     elif opt in ("-i", "--ip"):
 	regbool = valid_ip(arg)
 	if regbool == True:
-	    pass #implement the scanning part
+	    #Prepare arguments for the attack
+	    ipScan = arg
   	else:
-	    print("The format of the IP is not valid (IPv6 and IPv4 handled )!")
+	    print("\033[1m\033[31mInvalid IP format !\033[0m \nYet, IPv6 and IPv4 handled.")
 	    sys.exit(1)
 		
     elif opt in ("-f","--scan-families"):
-	print("CERN is awesome. My school sucks!!")
+	familyScan = arg.split(",")
+
+try:
+    #Do we have all the required args to run the scan
+    runScanBool = not ipScan and not familyScan
+    #Then run the scan:
+    if not runScanBool:
+	print("Don't forget to deactivate your firewall")
+	print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
+	message= """< OTP/2.0 >
+CLIENT <|> NVT_INFO <|> CLIENT
+CLIENT <|> COMPLETE_LIST <|> CLIENT
+"""
+	outputVar = SocketConnect(message)
+	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
+	oid = ParseOid(parserMatch,outputVar)
+	oid.SectionParser()
+	print("Please Wait, while we scan the device ...")
+#	scan = ParseScan(parserMatch,outputVar)
+	
+	
+except NameError:
+    print("\033[1m\033[31mArgument missing !\033[0m\nCheck that you gave the ip & families to scan.")

@@ -17,7 +17,6 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
     event = multiprocessing.Event()
 
     def send_msg(sock,message):
-	print("Wait for job to be completed, it can take a few seconds ...")
         for line in message.splitlines(True):
 	    global event
 	    event.set()
