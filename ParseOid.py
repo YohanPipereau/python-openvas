@@ -8,7 +8,7 @@ class ParseOid(Parse):
 	self.familyArray = []
 
     def Parser(self,line):
-	oidList=line.split("<|>")
+	oidList=line.split(" <|> ")
 	if len(oidList) == 10 :
 	    #Create an array with Family as column and oid as lines
 	    #Array = [[Family1Name,oid1.1,oid1.2,...],[Family2Name,oid2.1,oid2.2,...],...]

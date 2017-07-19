@@ -93,7 +93,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	print("Please Wait, while we scan the device ...")
 	#Put the oid of the Families required in a string oidString
 	familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
-	print(familyList)
+	familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
 	#oidString = oid.familyArray[k] #Convert the list into a string
 	#Read the content of the configuration file --> confFile
 	message = """< OTP/2.0 >
