@@ -22,7 +22,6 @@ class ParseOid(Parse):
 		k+=1
 	    if familyFound == False:
 	        #If we did not find the family then we need to append it to the array
-		print(oidList[4]) #print the families names
 	        self.familyArray.append([oidList[4],oidList[0]])
 
 

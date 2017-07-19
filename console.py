@@ -33,10 +33,12 @@ for opt,arg in opts:
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
-	outputVar = SocketConnect(message)
+	outputVar = SocketConnect(message) #outputVar is the answer of scanner to message
 	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
-	oid = ParseOid(parserMatch,outputVar)
+	oid = ParseOid(parserMatch,outputVar) #Let's parse the answer of the scanner
 	oid.SectionParser()
+	for cmpt in range(len(oid.familyArray)-1): #print the families available
+	    sys.stdout.write(oid.familyArray[cmpt][0])
 	sys.exit(0)
 
     elif opt in ("-h", "--help"):
@@ -78,7 +80,7 @@ try:
     runScanBool = not ipScan and not familyScan
     #Then run the scan:
     if not runScanBool:
-	print("Don't forget to deactivate your firewall")
+	print("\033[34mDon't forget to deactivate your firewall !\033[0m")
 	print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
 	message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
@@ -89,8 +91,20 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	oid = ParseOid(parserMatch,outputVar)
 	oid.SectionParser()
 	print("Please Wait, while we scan the device ...")
-#	scan = ParseScan(parserMatch,outputVar)
-	
-	
+	#Put the oid of the Families required in a string oidString
+	familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
+	print(familyList)
+	#oidString = oid.familyArray[k] #Convert the list into a string
+	#Read the content of the configuration file --> confFile
+	message = """< OTP/2.0 >
+CLIENT <|> PREFERENCES <|>
+plugin_set <|>"""
+	+ oidString + "\n"
+	+confFile
+	+ len(ipScan) + "\n"
+	+ipScan +"\n"
+	scan = ParseScan(parserMatch,outputVar)
+
 except NameError:
-    print("\033[1m\033[31mArgument missing !\033[0m\nCheck that you gave the ip & families to scan.")
+    pass
+#    print("\033[1m\033[31mArgument missing !\033[0m\nCheck that you gave the ip & families to scan.")
