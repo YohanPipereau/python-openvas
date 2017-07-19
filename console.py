@@ -1,8 +1,20 @@
 #This aims at parsing the CLI args
-import getopt, sys, signal
+import getopt, sys, signal, re, socket
 from threading import Thread
 from SocketConnect import *
 from ParseOid import *
+
+def valid_ip(address):
+    #check if an ip is valid or not
+    try: 
+        b1 = socket.inet_pton(socket.AF_INET6,address) 
+        return True
+    except:
+    	try:
+	    b2 = socket.inet_pton(socket.AF_INET,address)
+	    return True
+        except:
+	    return False
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
@@ -10,10 +22,8 @@ try:
     #parse options/arguments given to the program. Use : to indicate a string after the option, and = for the long options
     #the output of getopt is a tuple of list ([],[]). This list contains tuple themselves
 except getopt.GetoptError:
-    print("""
-    Sorry, the given option does not exist.
-    Please get some help by running the following arguments: \033[1m -h \033[0m or \033[1m --help \033[0m
-    """)
+    print("""Sorry, the given option does not exist or is not used properly
+    Please get some help by running the following arguments: \033[1m -h \033[0m or \033[1m --help \033[0m. """)
     sys.exit(2)
 for opt,arg in opts:
     if opt in ('-l','list-families'):
@@ -34,7 +44,6 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m -h \033[0m  Get some help
     \033[1m -i \033[0m  IP of the host to scan
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
-    \033[1m -o \033[0m  Specify the path to the output file
 
 
     \033[1m --help \033[0m          get some help
@@ -42,7 +51,6 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
     \033[1m --list-oid \033[0m      Output the list of the oid, name of vulnerabilities, and info about it
     \033[1m --email \033[0m         send the report to someone@example.com by email
-    \033[1m --output \033[0m        specify the path to the output file
     \033[1m --ip \033[0m            IP of the host to scan
 
 \033[1m EXAMPLES \033[0m
@@ -51,10 +59,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
         """)
         sys.exit(0)
 
-#    elif opt in ("-i", "--ip"):
-#	if( 
-#	except Exception("The format of the IP is not valid (IPv6 and IPv4) handled !")
-	    
+    elif opt in ("-i", "--ip"):
+	regbool = valid_ip(arg)
+	if regbool == True:
+	    pass #implement the scanning part
+  	else:
+	    print("The format of the IP is not valid (IPv6 and IPv4 handled )!")
+	    sys.exit(1)
 		
     elif opt in ("-f","--scan-families"):
 	print("CERN is awesome. My school sucks!!")
