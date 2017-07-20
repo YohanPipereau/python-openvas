@@ -38,7 +38,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	oid = ParseOid(parserMatch,outputVar) #Let's parse the answer of the scanner
 	oid.SectionParser()
 	for cmpt in range(len(oid.familyArray)-1): #print the families available
-	    sys.stdout.write(oid.familyArray[cmpt][0])
+	    sys.stdout.write(oid.familyArray[cmpt][0] + "\n")
 	sys.exit(0)
 
     elif opt in ("-h", "--help"):
@@ -82,30 +82,32 @@ try:
     if not runScanBool:
 	print("\033[34mDon't forget to deactivate your firewall !\033[0m")
 	print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
-	message= """< OTP/2.0 >
-CLIENT <|> NVT_INFO <|> CLIENT
-CLIENT <|> COMPLETE_LIST <|> CLIENT
-"""
-	outputVar = SocketConnect(message)
-	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
-	oid = ParseOid(parserMatch,outputVar)
-	oid.SectionParser()
-	print("Please Wait, while we scan the device ...")
-	#Put the oid of the Families required in a string oidString
-	familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
-	familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
-	#familyIndex=Indexes of familyArray corresponding to family/ies to scan
-	oidList = []
-	for i in familyIndex:
-	    oid.familyArray[i].pop(0)
-	    oidList = oidList + oid.familyArray[i]
-	oidString = "".join(str(x)+";" for x in oidList)
-	oidString = oidString[:-1]
-	#Read the content of the configuration file --> confFile
-	confFile = open("scan.conf").read()
-	message = """< OTP/2.0 >
-CLIENT <|> PREFERENCES <|>
-plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
+	#message= """< OTP/2.0 >
+#CLIENT <|> NVT_INFO <|> CLIENT
+#CLIENT <|> COMPLETE_LIST <|> CLIENT
+#"""
+	#outputVar = SocketConnect(message)
+	#parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
+	#oid = ParseOid(parserMatch,outputVar)
+	#oid.SectionParser()
+	#print("Please Wait, while we scan the device ...")
+	##Put the oid of the Families required in a string oidString
+	#familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
+	#familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
+	##familyIndex=Indexes of familyArray corresponding to family/ies to scan
+	#oidList = []
+	#for i in familyIndex:
+	#    oid.familyArray[i].pop(0)
+	#    oidList = oidList + oid.familyArray[i]
+	#print(oidList)
+	#oidString = "".join(str(x)+";" for x in oidList)
+	#oidString = oidString[:-1]
+	##Read the content of the configuration file --> confFile
+	#confFile = open("scan.conf").read()
+	message = open("25478.client.original").read()
+#	message = """< OTP/2.0 >
+#CLIENT <|> PREFERENCES <|>
+#plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
 	#scan = ParseScan(parserMatch,outputVar)
 	outputScan = SocketConnect(message)
 
