@@ -22,6 +22,7 @@ def SocketConnect(message,unixsocket_path = '/var/run/openvassd.sock'):
 	    event.set()
 	    sock.send(line)
 	    time.sleep(0.1) #wait a bit cause the receiver is a bit long to write
+	    sys.stdout.write(line)
 	    event.clear()
 	    event.set()
 

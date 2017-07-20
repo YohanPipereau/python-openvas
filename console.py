@@ -101,15 +101,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	    oidList = oidList + oid.familyArray[i]
 	oidString = "".join(str(x)+";" for x in oidList)
 	oidString = oidString[:-1]
-	#oidString = oid.familyArray[k] #Convert the list into a string
 	#Read the content of the configuration file --> confFile
+	confFile = open("scan.conf").read()
 	message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
-plugin_set <|>""" + oidString + "\n"
-	+confFile
-	+ len(ipScan) + "\n"
-	+ipScan +"\n"
-	scan = ParseScan(parserMatch,outputVar)
+plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
+	#scan = ParseScan(parserMatch,outputVar)
+	outputScan = SocketConnect(message)
 
 except NameError:
     pass
