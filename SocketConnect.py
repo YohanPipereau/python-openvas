@@ -24,8 +24,11 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
 	while True:
 	    try:
 		sock.settimeout(timer)
-		outputVar += sock.recv(1024)
+		data = sock.recv(1024)
 		sock.settimeout(None)
+		outputVar += data
+		if "<|> BYE" in data:
+		    return(outputVar)
 	    except socket.timeout:
 		print("timeout")
 		return(outputVar)
@@ -36,9 +39,9 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
 		data = sock.recv(1024)
 		sock.settimeout(None)
 		outputVar += data
+		if "<|> BYE" in data:
+		    return(outputVar)
 		print(data)
 	    except socket.timeout:
 		print("timeout")
 		return(outputVar)
-
-#SERVER <|> BYE <|> BYE <|> SERVER	
