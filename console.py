@@ -48,8 +48,9 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m -h \033[0m  Get some help
     \033[1m -i \033[0m  IP of the host to scan
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
+    \033[1m -s \033[0m  send the report to someone@example.com by email
 
-
+ 
     \033[1m --help \033[0m          get some help
     \033[1m --list-families \033[0m List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
