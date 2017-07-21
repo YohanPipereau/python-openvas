@@ -18,7 +18,7 @@ def valid_ip(address):
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
-    opts , args = getopt.getopt(argv, "f:hi:lo:vs:", ["help", "verbose","list-families","scan-families=","list-oid","socket=","email=","output=","ip="])
+    opts , args = getopt.getopt(argv, "af:hi:l:s:", ["all","help", "verbose","list-families","scan-families=","socket=","email=","ip="])
     #parse options/arguments given to the program. Use : to indicate a string after the option, and = for the long options
     #the output of getopt is a tuple of list ([],[]). This list contains tuple themselves
 except getopt.GetoptError:
@@ -44,17 +44,18 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     elif opt in ("-h", "--help"):
         print("""
 \033[1m OPTIONS \033[0m
+    \033[1m -a \033[0m  Scan all the families
     \033[1m -f \033[0m  Specify families for the families for the scan
     \033[1m -h \033[0m  Get some help
     \033[1m -i \033[0m  IP of the host to scan
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
-    \033[1m -s \033[0m  send the report to someone@example.com by email
+    \033[1m -s \033[0m  Send the report to someone@example.com by email
 
  
+    \033[1m --all \033[0m 	    Scan all the families
     \033[1m --help \033[0m          get some help
     \033[1m --list-families \033[0m List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
-    \033[1m --list-oid \033[0m      Output the list of the oid, name of vulnerabilities, and info about it
     \033[1m --email \033[0m         send the report to someone@example.com by email
     \033[1m --ip \033[0m            IP of the host to scan
 
@@ -75,10 +76,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 		
     elif opt in ("-f","--scan-families"):
 	familyScan = arg.split(",")
+	scanAll = False
 
     elif opt in ("-s","--email"):
 	destinationList = arg.split(",")
 
+    elif opt in ("-a","--all"):
+	scanAll = True
 try:
     #Do we have all the required args to run the scan
     runScanBool = not ipScan and not familyScan
@@ -98,7 +102,10 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	print("Please Wait, while we scan the device ...")
 	#Put the oid of the Families required in a string oidString
 	familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
-	familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
+	if scanAll == True: #Let's scan all the families
+	    familyIndex = [i for i in range(len(familyList)-1)]
+	else:	
+	    familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
 	#familyIndex=Indexes of familyArray corresponding to family/ies to scan
 	oidList = []
 	for i in familyIndex:
@@ -108,18 +115,17 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	oidString = oidString[:-1]
 	#Read the content of the configuration file --> confFile
 	confFile = open("conf/scan.conf").read()
-	#message = open("25478.client.original").read()
 	message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
 	outputScan = SocketConnect(message,300,True)
-	parserMatch = "< OTP/2.0 >\n"
-	#scanReport = ParseScan(parserMatch,outputScan)
+	####Parsing the Scan Section
+	scanReport = ParseScan(outputScan)
+	scanReport.ParserJSON()
 	#####Email Section
 	if not not destinationList:
-	    print("h")
-	s = Email(scanReport,destinationList)
-	s.sendEmail()
+	    s = Email(scanReport,destinationList)
+	    s.sendEmail()
 
 except NameError:
     pass
