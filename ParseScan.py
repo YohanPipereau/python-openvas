@@ -1,4 +1,4 @@
-#This file aims at parsing the report of the server to utput a readable report
+#This file aims at parsing the report of the server to 2 format: email readable format and elasticsearch Json format
 
 class ParseScan:
 

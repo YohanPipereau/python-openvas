@@ -2,23 +2,17 @@
 
 import smtplib
 
-class SendEmail:
+class Email:
 
-    def __init__(self, report,destinationAddr):
-	self.report = report #The report to send  before blacklisting
+    def __init__(self, msg,destinationAddr):
+	self.msg = msg #The report to send after parsing and blacklisting
         self.destinationAddr = destinationAddr
 	
-    def Blacklist(self):
-	pass #to implement
-	
-
     #Encoding UTF8
     #Parsing the header: From, To, Subject
     def sendEmail(self):
-	smtpObj = SMTP()
-	smtpObj.connect(localhost,25) #connect to the localhost SMTP server on default port 25
-	msg = 	
-	smtpObj.sendmail(sourceAddr, destinationAddr, msg)
+	smtpObj = smtplib.SMTP('127.0.0.1')
+	smtpObj.sendmail("openvas@cern.ch", self.destinationAddr,self.msg)
 	smtpObj.quit() #end the SMTP connection
 
 

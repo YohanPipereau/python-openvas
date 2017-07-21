@@ -104,7 +104,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	oidString = "".join(str(x)+";" for x in oidList)
 	oidString = oidString[:-1]
 	#Read the content of the configuration file --> confFile
-	confFile = open("scan.conf").read()
+	confFile = open("conf/scan.conf").read()
 	#message = open("25478.client.original").read()
 	message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
