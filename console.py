@@ -76,6 +76,9 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     elif opt in ("-f","--scan-families"):
 	familyScan = arg.split(",")
 
+    elif opt in ("-s","--email"):
+	destinationList = arg.split(",")
+
 try:
     #Do we have all the required args to run the scan
     runScanBool = not ipScan and not familyScan
@@ -109,8 +112,14 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
-	#scan = ParseScan(parserMatch,outputVar)
 	outputScan = SocketConnect(message,300,True)
+	parserMatch = "< OTP/2.0 >\n"
+	#scanReport = ParseScan(parserMatch,outputScan)
+	#####Email Section
+	if not not destinationList:
+	    print("h")
+	s = Email(scanReport,destinationList)
+	s.sendEmail()
 
 except NameError:
     pass
