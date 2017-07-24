@@ -4,31 +4,26 @@ class ParseScan:
 
     def __init__(self,outputScan):
 	self.outputScan = outputScan
+	self.report = ""
 
     def ParserJSON(self):
 	print("Parsing Scan to create report ...")
 	scanList=self.outputScan.split("SERVER <|>")
-	for motiv in ScanList:
-	    print("motiv")
-#	    if "SERVER <|> TIME <|>" in motiv:
-#		lineParsed = line.split("<|>")
-#		if "SCAN_START" in lineParsed:
-#		    self.report += "Scan started on" + lineParsed[4]	
-#		elif "HOST_END" in lineParsed[2]:
-#		    self.report += "Scan ended on" + lineParsed[4]
-#	    elif "SERVER <|> LOG" in line:
-#		triggerNVT = True
-#		
-#	    if triggerNVT == True:
-#		if "<|> SERVER" in line:
-#		    triggerNVT=False
-#		else:
-#		    e	
-		
-		
-    def ParseEmail(self,line):
-	pass #to implement		
-
+	for motiv in scanList:
+	    print(motiv)
+	    #TIME Flag detected
+	    if "TIME <|>" in motiv:
+		lineParsed = motiv.split("<|>")
+		if "SCAN_START" in lineParsed:
+		    self.report += "Scan started on" + motivParsed[4]	
+		elif "HOST_END" in lineParsed[2]:
+		    self.report += "Scan ended on" + motivParsed[4]
+	    #LOG Flag detected
+	    elif "LOG <|>" in motiv:
+		pass
+	    #ALARM Flag detected	
+	    elif "ALARM <|>" in motiv:	
+		pass
 """
 SERVER <|> ALARM <|> 188.185.74.71 <|> 22/tcp <|> Installed version: 6.6.1
 Fixed version:     6.9

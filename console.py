@@ -3,6 +3,7 @@ import getopt, sys, signal, re, socket
 from threading import Thread
 from SocketConnect import *
 from ParseOid import *
+from ParseScan import *
 
 def valid_ip(address):
     #check if an ip is valid or not
@@ -83,50 +84,53 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 
     elif opt in ("-a","--all"):
 	scanAll = True
-try:
-    #Do we have all the required args to run the scan
-    runScanBool = not ipScan and not familyScan
-    #Then run the scan:
-    if not runScanBool:
-	print("\033[34mDon't forget to deactivate your firewall !\033[0m")
-	print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
-	message= """< OTP/2.0 >
+
+    elif opt in ("-j","--json"):
+	JSONbool = True
+
+#Do we have all the required args to run the scan
+runScanBool = not ipScan and not familyScan
+#Then run the scan:
+if not runScanBool:
+    print("\033[34mDon't forget to deactivate your firewall !\033[0m")
+    print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
+    message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
-	outputVar = SocketConnect(message,3)
-	print("fin socket")
-	parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
-	oid = ParseOid(parserMatch,outputVar)
-	oid.SectionParser()
-	print("Please Wait, while we scan the device ...")
-	#Put the oid of the Families required in a string oidString
-	familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
-	if scanAll == True: #Let's scan all the families
-	    familyIndex = [i for i in range(len(familyList)-1)]
-	else:	
-	    familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
-	#familyIndex=Indexes of familyArray corresponding to family/ies to scan
-	oidList = []
-	for i in familyIndex:
-	    oid.familyArray[i].pop(0)
-	    oidList = oidList + oid.familyArray[i]
-	oidString = "".join(str(x)+";" for x in oidList)
-	oidString = oidString[:-1]
-	#Read the content of the configuration file --> confFile
-	confFile = open("conf/scan.conf").read()
-	message = """< OTP/2.0 >
+    outputVar = SocketConnect(message,3)
+    parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
+    oid = ParseOid(parserMatch,outputVar)
+    oid.SectionParser()
+    print("Please Wait, while we scan the device ...")
+    #Put the oid of the Families required in a string oidString
+    familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
+    if scanAll == True: #Let's scan all the families
+	familyIndex = [i for i in range(len(familyList)-1)]
+    else:	
+	familyIndex = [i for i, item in enumerate(familyList) if item in set(familyScan)] 
+    #familyIndex=Indexes of familyArray corresponding to family/ies to scan
+    oidList = []
+    for i in familyIndex:
+	oid.familyArray[i].pop(0)
+	oidList = oidList + oid.familyArray[i]
+    oidString = "".join(str(x)+";" for x in oidList)
+    oidString = oidString[:-1]
+    #Read the content of the configuration file --> confFile
+    confFile = open("conf/scan.conf").read()
+    message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
-	outputScan = SocketConnect(message,300,True)
-	####Parsing the Scan Section
-	scanReport = ParseScan(outputScan)
+    outputScan = SocketConnect(message,300,False) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
+    ####Parsing the Scan Section
+    scanReport = ParseScan(outputScan)
+    if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
-	#####Email Section
-	if not not destinationList:
-	    s = Email(scanReport,destinationList)
-	    s.sendEmail()
-
-except NameError:
-    pass
-#    print("\033[1m\033[31mArgument missing !\033[0m\nCheck that you gave the ip & families to scan.")
+    #####Email Section
+    try:
+	if destinationList:
+	     emailReport = scanReport.ParserEmail()
+	     s = Email(emailReport,destinationList)
+	     s.sendEmail()
+    except NameError:
+	pass

@@ -30,7 +30,6 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
 		if "<|> BYE" in data:
 		    return(outputVar)
 	    except socket.timeout:
-		print("timeout")
 		return(outputVar)
     else:
 	while True:
