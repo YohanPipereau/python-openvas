@@ -19,7 +19,7 @@ def valid_ip(address):
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
-    opts , args = getopt.getopt(argv, "af:hi:l:s:", ["all","help", "verbose","list-families","scan-families=","socket=","email=","ip="])
+    opts , args = getopt.getopt(argv, "af:hi:jl:s:", ["all","help", "verbose","list-families","scan-families=","socket=","email=","ip="])
     #parse options/arguments given to the program. Use : to indicate a string after the option, and = for the long options
     #the output of getopt is a tuple of list ([],[]). This list contains tuple themselves
 except getopt.GetoptError:
@@ -49,6 +49,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m -f \033[0m  Specify families for the families for the scan
     \033[1m -h \033[0m  Get some help
     \033[1m -i \033[0m  IP of the host to scan
+    \033[1m -j \033[0m  Output the report in JSON
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m -s \033[0m  Send the report to someone@example.com by email
 
@@ -59,6 +60,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m --scan-families \033[0m Scan the families given in arguments and separated by a coma , (default is default scan)
     \033[1m --email \033[0m         send the report to someone@example.com by email
     \033[1m --ip \033[0m            IP of the host to scan
+    \033[1m --json \033[0m          Output the report in JSON
 
 \033[1m EXAMPLES \033[0m
     First, list the available families: python console.py -l
@@ -125,9 +127,10 @@ plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipSca
     ####Parsing the Scan Section
     scanReport = ParseScan(outputScan)
     JSONbool = True
+    ##### JSON Section
     if JSONbool: #Parse in Json
-	scanReport.ParserEmail()
-	print(scanReport.report)
+	scanReport.ParserJSON()
+	print(scanReport.jsonOutput)
     #####Email Section
     try:
 	if destinationList:

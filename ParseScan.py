@@ -7,7 +7,6 @@ class ParseScan:
     def __init__(self,outputScan):
 	self.outputScan = outputScan
 	self.report = ""
-	self.jsonOutput = ""
     
     def ParserEmail(self):
 	print("\033[32mParsing Scan to create report ...\033[0m")
@@ -31,7 +30,10 @@ class ParseScan:
 		self.report += motivParsed[3]
 
     def ParserJSON(self):
-	timestamp = int(time.time() #timestamp is required to sort out scan
+	self.timestamp = int(time.time()) #timestamp is required to sort out scan
+	templateJson = json.dumps({"timestamp": {self.timestamp}, "start_scan" : {}, "end_scan" : {} , "target" : { "host" : {} } , "plugin" : {}})
+	print("helloo")
+	self.jsonOutput = json.loads(templateJson)
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
 	for motiv in scanList:
@@ -39,14 +41,15 @@ class ParseScan:
 	    if "TIME <|>" in motiv:
 		motivParsed = motiv.split("<|>")
 		if "SCAN_START" in motivParsed[1]:
-		    self.jsonOutput += "'start_scan'" + motivParsed[2]	
+		    self.jsonOutput["start_scan"] = motivParsed[2]
 		elif "SCAN_END" in motivParsed[1]:
-		    self.jsonOutput += "'end_scan'" + motivParsed[2]
+		    self.jsonOutput["end_scan"] =  motivParsed[2]
 	    #LOG Flag detected
 	    elif "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
 		self.jsonOutput += "\n***** Vulnerability : " + motivParsed[4] + ":\n"
 		self.jsonOutput += motivParsed[3]
+		self.jsonOutput["plugin"].update({ motivParsed[4] : { "name" : {}, "description" : {} , "message" : {} }})
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
