@@ -131,6 +131,7 @@ plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipSca
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
 	print(scanReport.jsonOutput)
+	print(scanReport.jsonOutput["plugin"]["1.3.6.1.4.1.25623.1.0.102002"]["message"])
     #####Email Section
     try:
 	if destinationList:
