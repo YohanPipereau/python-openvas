@@ -29,7 +29,7 @@ Please get some help by running the following arguments: \033[1m -h \033[0m or \
     sys.exit(2)
 for opt,arg in opts:
     if opt in ('-l','list-families'):
-	print("Wait for job to be completed, it can take a few seconds ...")
+	print("\033[32mWait for job to be completed, it can take a few seconds ...\033[32m")
 	message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -93,7 +93,7 @@ runScanBool = not ipScan and not familyScan
 #Then run the scan:
 if not runScanBool:
     print("\033[34mDon't forget to deactivate your firewall !\033[0m")
-    print("Wait, we are retrieving the ID of the vulnerabilities to scan ...")
+    print("\033[32mWait, we are retrieving the ID of the vulnerabilities to scan ...\033[0m")
     message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -102,7 +102,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
     oid = ParseOid(parserMatch,outputVar)
     oid.SectionParser()
-    print("Please Wait, while we scan the device ...")
+    print("\033[32mPlease Wait, while we scan the device ...\033[0m")
     #Put the oid of the Families required in a string oidString
     familyList = [ oid.familyArray[k][0] for k in range (len(oid.familyArray)-1) ]
     if scanAll == True: #Let's scan all the families
@@ -121,11 +121,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
-    outputScan = SocketConnect(message,300,False) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
+    outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
     scanReport = ParseScan(outputScan)
+    JSONbool = True
     if JSONbool: #Parse in Json
-	scanReport.ParserJSON()
+	scanReport.ParserEmail()
+	print(scanReport.report)
     #####Email Section
     try:
 	if destinationList:
