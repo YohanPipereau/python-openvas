@@ -36,17 +36,8 @@ class ParseScan:
              "timestamp" : str(int(time.time())) ,
              "host" : "openvas6.cern.ch"
              },
-  "body" : {
-	     "target" : "" ,
-	     "plugin" : {
-			"name" : {},
-			"description" : {},
-			"oid" : {},
-			"message" : {},
-			"type": {}
-			}
-  }
-} #template of a new log
+  "body" : {}
+}
 	jsonDict=[] #jsonDict is an array containing the Json Dictionnary
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
@@ -55,20 +46,38 @@ class ParseScan:
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "LOG"
-		jsonDict[len(jsonDict)-1]["body"]["target"] = self.target
+		bodyDict = {
+"target" : self.target ,
+"plugin" : {
+	"name" : {},
+	"description" : {},
+	"oid" : motivParsed[4].strip(),
+	"message" : str(motivParsed[3]),
+	"type": "LOG"
+}
+}
+		bodyJson = json.dumps(bodyDict)
+		jsonDict[len(jsonDict)-1]["body"] = bodyJson
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson)
-		jsonDict[len(jsonDict)-1]["body"]["target"] = self.target
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
-		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "ALARM"
+		bodyDict = {
+"target" : self.target ,
+"plugin" : {
+	"name" : {},
+	"description" : {},
+	"oid" : motivParsed[4].strip(),
+	"message" : str(motivParsed[3]),
+	"type": "ALARM"
+}
+}
+		bodyJson = json.dumps(bodyDict)
+		jsonDict[len(jsonDict)-1]["body"] = bodyJson
 	self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json	
-	#req = urllib2.Request("http://localhost:5140", self.jsonOutput, {'Content-Type': 'application/json'})
-	#f = urllib2.urlopen(req)
-	#response = f.read()
-	#f.close()
+	print(self.jsonOutput)
+	req = urllib2.Request("http://localhost:5140", self.jsonOutput, {'Content-Type': 'application/json'})
+	f = urllib2.urlopen(req)
+	response = f.read()
+	f.close()
+	print("\033[32mJSON Sent!\033[0m")

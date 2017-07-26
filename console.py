@@ -131,7 +131,6 @@ plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipSca
     ##### JSON Section
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
-	print(scanReport.jsonOutput)
     #####Email Section
     if 'destinationList' in locals():
 	scanReport.ParserEmail()
