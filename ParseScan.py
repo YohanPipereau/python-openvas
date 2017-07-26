@@ -44,41 +44,32 @@ class ParseScan:
 		    self.report += motivParsed[3]
 
     def ParserJSON(self):
-#	templateJson = collections.OrderedDict({
-#"headers" : {
-#	"timestamp" : str(int(time.time())) ,
-#	"host" : "openvas6.cern.ch"
-#	},
-#"body" : {}
-#})
+	jsonDict=[] #jsonDict is an array containing the Json Dictionnary
 	templateJson = {}
 	templateJson["headers"] = {}
 	templateJson["headers"]["timestamp"] = str(int(time.time()))
 	templateJson["headers"]["host"] = "openvas6.cern.ch"
-	jsonDict=[] #jsonDict is an array containing the Json Dictionnary
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
 	for motiv in scanList:
 	    #LOG Flag detected
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
-		print(jsonDict)
 		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
 		oidNumber = motivParsed[4].strip() 
 		familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
 		bodyDict = {
 "target" : self.target ,
 "plugin" : {
-#	"name" : self.familyDict[familyOfOid][oidNumber]["name"],
-#	"description" : self.familyDict[familyOfOid][oidNumber]["description"],
+	"name" : self.familyDict[familyOfOid][oidNumber]["name"],
+	"description" : self.familyDict[familyOfOid][oidNumber]["description"],
 	"oid" : oidNumber,
-#	"message" : str(motivParsed[3]),
+	"message" : str(motivParsed[3]),
 	"type": "LOG"
 }
-}
+}	
 		bodyJson = json.dumps(bodyDict)
-		#jsonDict[len(jsonDict)-1]["body"] = bodyJson
-		jsonDict[len(jsonDict)-1]["body"] = "test"
+		jsonDict[len(jsonDict)-1]["body"] = bodyJson
 	    #ALARM Flag detected
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
@@ -97,7 +88,8 @@ class ParseScan:
 }
 		bodyJson = json.dumps(bodyDict)
 		jsonDict[len(jsonDict)-1]["body"] = bodyJson
-	self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json	
+	self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json
+	print(self.jsonOutput)
 	req = urllib2.Request("http://localhost:5140", self.jsonOutput, {'Content-Type': 'application/json'})
 	f = urllib2.urlopen(req)
 	response = f.read()
