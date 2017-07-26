@@ -31,7 +31,7 @@ Please get some help by running the following arguments: \033[1m -h \033[0m or \
 JSONbool = False #default behaviour is without json output
 for opt,arg in opts:
     if opt in ('-l','--list-families'):
-	print("\033[32mWait for job to be completed, it can take a few seconds ...\033[32m")
+	print("\033[32mWait for job to be completed, it can take a few seconds ...\033[0m")
 	message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -115,12 +115,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     else:
 	for i in familyScan:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
-    oidString = ''.join(oidList)
+    oidString = ','.join(oidList)
+    oidString[:-1] #Remove the first ","
     #Read the content of the configuration file --> confFile
     confFile = open("conf/scan.conf").read()
     message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
-plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
+plugin_set <|> """ + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
     outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
     scanReport = ParseScan(outputScan,ipScan)

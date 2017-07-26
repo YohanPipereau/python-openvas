@@ -14,6 +14,7 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
     sock.connect(unixsocket_path)
     #sock.setblocking(False)
     for line in message.splitlines(True):
+	print(line)
 	if line == "< OTP/2.0 >\n":
 	    sock.send(line)
 	    time.sleep(1)
