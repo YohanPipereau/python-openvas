@@ -5,15 +5,22 @@ import time,json,urllib2
 
 class ParseScan:
 
-    def __init__(self,outputScan,target):
+    def __init__(self,outputScan,target,familyDict):
 	self.outputScan = outputScan
 	self.target = target
 	self.report = ""
 	with open('conf/blacklist.conf', 'r') as blacklistFile:
 	    self.blacklist=blacklistFile.read().splitlines() #put the file into a list
-    
+	self.familyDict = familyDict #we need the familyDict for the name & description of the plugin oid
+
+    def search(self, searchFor):
+	for k in self.familyDict:
+	    for v in self.familyDict[k]:
+		if searchFor in v:
+		    return k
+	return None   
+ 
     def ParserEmail(self):
-	print(self.blacklist)
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
 	for motiv in scanList:
@@ -27,6 +34,7 @@ class ParseScan:
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
+	        print(self.search(motivParsed[4].strip()))
 		self.report += "\n***** VULNERABILITY : " + motivParsed[4] + ":\n"
 		self.report += motivParsed[3]
 
@@ -46,6 +54,9 @@ class ParseScan:
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
+		#We need to find the family of the oid
+		print("hello")
+		print(search(self.familyDict,motivParsed[4].strip()))
 		bodyDict = {
 "target" : self.target ,
 "plugin" : {

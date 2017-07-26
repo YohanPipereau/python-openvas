@@ -122,10 +122,9 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|> """ + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
-    print(message)
     outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
-    scanReport = ParseScan(outputScan,ipScan)
+    scanReport = ParseScan(outputScan,ipScan,oid.familyDict)
     ##### JSON Section
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()

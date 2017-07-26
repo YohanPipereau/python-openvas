@@ -115,17 +115,16 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     else:
 	for i in familyScan:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
-    oidString = ','.join(oidList)
+    oidString = ';'.join(oidList)
     oidString[:-1] #Remove the first ","
     #Read the content of the configuration file --> confFile
     confFile = open("conf/scan.conf").read()
     message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
 plugin_set <|> """ + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
-    print(message)
     outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
-    scanReport = ParseScan(outputScan,ipScan)
+    scanReport = ParseScan(outputScan,ipScan,oid.familyDict)
     ##### JSON Section
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
