@@ -112,9 +112,11 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     if scanAll == True: #Let's scan all the families
 	for i in familyList:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
+	   print(len(oid.familyDict[i].keys()))
     else:
 	for i in familyScan:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
+	   print(len(oid.familyDict[i].keys()))
     oidString = ','.join(oidList)
     oidString[:-1] #Remove the first ","
     #Read the content of the configuration file --> confFile
