@@ -9,9 +9,10 @@ class ParseScan:
 	self.outputScan = outputScan
 	self.report = ""
 	with open('conf/blacklist.conf', 'r') as blacklistFile:
-	    self.blacklist=myfile.read()
+	    self.blacklist=blacklistFile.read().splitlines() #put the file into a list
     
     def ParserEmail(self):
+	print(self.blacklist)
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
 	for motiv in scanList:
@@ -19,9 +20,9 @@ class ParseScan:
 	    if "TIME <|>" in motiv:
 		motivParsed = motiv.split("<|>")
 		if "SCAN_START" in motivParsed[1]:
-		    self.report += "Scan started on" + motivParsed[2]	
+		    self.report += "Scan started on" + motivParsed[2] + "\n"	
 		elif "SCAN_END" in motivParsed[1]:
-		    self.report += "Scan ended on" + motivParsed[2]
+		    self.report += "Scan ended on" + motivParsed[2] + "\n"
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
@@ -29,7 +30,7 @@ class ParseScan:
 		self.report += motivParsed[3]
 
     def ParserJSON(self):
-	templateJson = [{
+	templateJson = {
   "headers" : {
              "timestamp" : str(int(time.time())) ,
              "host" : "openvas6.cern.ch"
@@ -44,20 +45,27 @@ class ParseScan:
 			"type": {}
 			}
   }
-}] #template of a new log
-	self.jsonOutput = json.dumps(templateJson) #convert to Json	
-	jsonDict = json.loads(templateJson) #work on the dict
+} #template of a new log
+	jsonDict=[] #jsonDict is an array containing the Json Dictionnary
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
 	for motiv in scanList:
 	    #LOG Flag detected
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
-		jsonDict["body"]["plugin"].update({ motivParsed[4].strip() : { "name" : {}, "description" : {} , "message" : str(motivParsed[3]) , "type" : "LOG"}})
+		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
+		print(jsonDict)
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "LOG"
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
-		self.jsonOutput["plugin"].update({ motivParsed[4].strip() : { "name" : {}, "description" : {} , "message" : {motivParsed[3]} , "type" : "ALARM"}})
+		jsonDict.append(templateJson)
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
+		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "ALARM"
+	self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json	
 	#req = urllib2.Request("http://localhost:5140", self.jsonOutput, {'Content-Type': 'application/json'})
 	#f = urllib2.urlopen(req)
 	#response = f.read()
