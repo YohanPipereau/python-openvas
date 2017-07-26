@@ -4,6 +4,7 @@ from threading import Thread
 from SocketConnect import *
 from ParseOid import *
 from ParseScan import *
+from Email import *
 
 def valid_ip(address):
     #check if an ip is valid or not
@@ -19,7 +20,7 @@ def valid_ip(address):
 
 try:
     argv=sys.argv[1:] #put the arguments in a string
-    opts , args = getopt.getopt(argv, "af:hi:jl:s:", ["all","help", "verbose","list-families","scan-families=","socket=","email=","ip="])
+    opts , args = getopt.getopt(argv, "af:hi:jl:s:", ["all","help", "verbose","list-families","scan-families=","socket=","email=","ip=","json"])
     #parse options/arguments given to the program. Use : to indicate a string after the option, and = for the long options
     #the output of getopt is a tuple of list ([],[]). This list contains tuple themselves
 except getopt.GetoptError:
@@ -27,6 +28,7 @@ except getopt.GetoptError:
 Sorry, the given option does not exist or is not used properly
 Please get some help by running the following arguments: \033[1m -h \033[0m or \033[1m --help \033[0m. """)
     sys.exit(2)
+JSONbool = False #default behaviour is without json output
 for opt,arg in opts:
     if opt in ('-l','list-families'):
 	print("\033[32mWait for job to be completed, it can take a few seconds ...\033[32m")
@@ -126,17 +128,22 @@ plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipSca
     outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
     scanReport = ParseScan(outputScan)
-    JSONbool = True
     ##### JSON Section
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
 	print(scanReport.jsonOutput)
 	print(scanReport.jsonOutput["plugin"]["1.3.6.1.4.1.25623.1.0.102002"]["message"])
     #####Email Section
-    try:
-	if destinationList:
-	     emailReport = scanReport.ParserEmail()
-	     s = Email(emailReport,destinationList)
-	     s.sendEmail()
-    except NameError:
-	pass
+    if destinationList:
+	scanReport.ParserEmail()
+	s = Email(scanReport.report,destinationList)
+	s.sendEmail()
+	print("\033[32mEmail Sent!\033[0m")
+    
+#    try:
+#	if destinationList:
+#	     emailReport = scanReport.ParserEmail()
+#	     s = Email(emailReport,destinationList)
+#	     s.sendEmail()
+#    except NameError:
+#	pass
