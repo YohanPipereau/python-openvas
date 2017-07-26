@@ -1,7 +1,7 @@
 #This file aims at parsing the report of the server to 2 format: email readable format and elasticsearch Json format
 #Be careful the JSON parser has been implemented to output a JSON file directly on the server so that it can be used by Flume using an HTTP request
 #the urllib2 lib is called urllib.requests in python3 change it if needed
-import time,json,urllib2
+import time,json,urllib2,collections
 
 class ParseScan:
 
@@ -34,18 +34,27 @@ class ParseScan:
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
-	        print(self.search(motivParsed[4].strip()))
-		self.report += "\n***** VULNERABILITY : " + motivParsed[4] + ":\n"
-		self.report += motivParsed[3]
+		oidNumber = motivParsed[4].strip()
+		if oidNumber in self.blacklist:
+		    print(oidNumber + "blacklisted, then not included in report")
+		else:
+		    familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
+		    nameOfOid = self.familyDict[familyOfOid][oidNumber]["name"]
+		    self.report += "\n***** VULNERABILITY : " + motivParsed[4] + nameOfOid + ":\n"
+		    self.report += motivParsed[3]
 
     def ParserJSON(self):
-	templateJson = {
-  "headers" : {
-             "timestamp" : str(int(time.time())) ,
-             "host" : "openvas6.cern.ch"
-             },
-  "body" : {}
-}
+#	templateJson = collections.OrderedDict({
+#"headers" : {
+#	"timestamp" : str(int(time.time())) ,
+#	"host" : "openvas6.cern.ch"
+#	},
+#"body" : {}
+#})
+	templateJson = {}
+	templateJson["headers"] = {}
+	templateJson["headers"]["timestamp"] = str(int(time.time()))
+	templateJson["headers"]["host"] = "openvas6.cern.ch"
 	jsonDict=[] #jsonDict is an array containing the Json Dictionnary
 	print("\033[32mParsing Scan to create report ...\033[0m")
 	scanList=self.outputScan.split("SERVER <|>")
@@ -53,32 +62,34 @@ class ParseScan:
 	    #LOG Flag detected
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
+		print(jsonDict)
 		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
-		#We need to find the family of the oid
-		print("hello")
-		print(search(self.familyDict,motivParsed[4].strip()))
+		oidNumber = motivParsed[4].strip() 
+		familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
 		bodyDict = {
 "target" : self.target ,
 "plugin" : {
-	"name" : {},
-	"description" : {},
-	"oid" : motivParsed[4].strip(),
-	"message" : str(motivParsed[3]),
+#	"name" : self.familyDict[familyOfOid][oidNumber]["name"],
+#	"description" : self.familyDict[familyOfOid][oidNumber]["description"],
+	"oid" : oidNumber,
+#	"message" : str(motivParsed[3]),
 	"type": "LOG"
 }
 }
 		bodyJson = json.dumps(bodyDict)
 		jsonDict[len(jsonDict)-1]["body"] = bodyJson
-	    #ALARM Flag detected	
+	    #ALARM Flag detected
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson)
+		oidNumber = motivParsed[4].strip() 
+		familyOfOid = self.search(motivParsed[4].strip())  #We need to find the family of the oid
 		bodyDict = {
 "target" : self.target ,
 "plugin" : {
-	"name" : {},
-	"description" : {},
-	"oid" : motivParsed[4].strip(),
+	"name" : self.familyDict[familyOfOid][oidNumber]["name"],
+	"description" : self.familyDict[familyOfOid][oidNumber]["description"],
+	"oid" : oidNumber,
 	"message" : str(motivParsed[3]),
 	"type": "ALARM"
 }
@@ -86,7 +97,6 @@ class ParseScan:
 		bodyJson = json.dumps(bodyDict)
 		jsonDict[len(jsonDict)-1]["body"] = bodyJson
 	self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json	
-	print(self.jsonOutput)
 	req = urllib2.Request("http://localhost:5140", self.jsonOutput, {'Content-Type': 'application/json'})
 	f = urllib2.urlopen(req)
 	response = f.read()

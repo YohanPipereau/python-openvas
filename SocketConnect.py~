@@ -18,6 +18,7 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
 	    sock.send(line)
 	    time.sleep(1)
 	else:
+	    print(line)
 	    sock.send(line)
 	    time.sleep(0.01)
     if verbose == False:
