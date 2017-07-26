@@ -127,22 +127,14 @@ CLIENT <|> PREFERENCES <|>
 plugin_set <|>""" + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipScan +"\n"
     outputScan = SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
-    scanReport = ParseScan(outputScan)
+    scanReport = ParseScan(outputScan,ipScan)
     ##### JSON Section
     if JSONbool: #Parse in Json
 	scanReport.ParserJSON()
 	print(scanReport.jsonOutput)
     #####Email Section
-    if destinationList in locals():
+    if 'destinationList' in locals():
 	scanReport.ParserEmail()
 	s = Email(scanReport.report,destinationList)
 	s.sendEmail()
 	print("\033[32mEmail Sent!\033[0m")
-    
-#    try:
-#	if destinationList:
-#	     emailReport = scanReport.ParserEmail()
-#	     s = Email(emailReport,destinationList)
-#	     s.sendEmail()
-#    except NameError:
-#	pass

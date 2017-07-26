@@ -5,8 +5,9 @@ import time,json,urllib2
 
 class ParseScan:
 
-    def __init__(self,outputScan):
+    def __init__(self,outputScan,target):
 	self.outputScan = outputScan
+	self.target = target
 	self.report = ""
 	with open('conf/blacklist.conf', 'r') as blacklistFile:
 	    self.blacklist=blacklistFile.read().splitlines() #put the file into a list
@@ -54,14 +55,15 @@ class ParseScan:
 	    if "LOG <|>" in motiv:
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
-		print(jsonDict)
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "LOG"
+		jsonDict[len(jsonDict)-1]["body"]["target"] = self.target
 	    #ALARM Flag detected	
 	    elif "ALARM <|>" in motiv:	
 		motivParsed = motiv.split("<|> ")
 		jsonDict.append(templateJson)
+		jsonDict[len(jsonDict)-1]["body"]["target"] = self.target
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["oid"] = motivParsed[4].strip()
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["message"] = str(motivParsed[3])
 		jsonDict[len(jsonDict)-1]["body"]["plugin"]["type"] = "ALARM"
