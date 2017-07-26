@@ -4,7 +4,7 @@ class ParseOid():
     def __init__(self,parserMatch,scanData):
         self.scanData = scanData
         self.parserMatch = parserMatch #when parserMatch is detected -> match section begins
-	self.familyArray = []
+	self.familyDict = {}
 
     def SectionParser(self):
         scanList = self.scanData.splitlines(True)
@@ -22,19 +22,17 @@ class ParseOid():
     def Parser(self,line):
 	oidList=line.split(" <|> ")
 	if len(oidList) == 10 :
-	    #Create an array with Family as column and oid as lines
-	    #Array = [[Family1Name,oid1.1,oid1.2,...],[Family2Name,oid2.1,oid2.2,...],...]
 	    familyFound = False #boolean equals False as long as we did not add the oidLine family to the array
 	    k=0
-	    while k<len(self.familyArray) and familyFound == False :
-	        if oidList[4] == self.familyArray[k][0]:
+	    while k<len(self.familyDict.keys()) and familyFound == False: #is the oid family in the family dict?
+		if oidList[4] == self.familyDict.keys()[k]: 
 		    #The family of this oid is already in the array
-		    self.familyArray[k].append(oidList[0])
+		    self.familyDict[self.familyDict.keys()[k]].update( {oidList[0] : {"name" : oidList[1] , "description" : oidList[9]}})
 		    familyFound = True
 		k+=1
 	    if familyFound == False:
-	        #If we did not find the family then we need to append it to the array
-	        self.familyArray.append([oidList[4],oidList[0]])
+	        #If we did not find the family then we need to append the family to the dict
+		self.familyDict.update({oidList[4] : {oidList[0] : { "name" : oidList[1], "description" : oidList[9]}}})
 
 
 #oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|> ID of revision <|> CVE id <|> BID (bugtrack id) <|> URL <|> Description \n

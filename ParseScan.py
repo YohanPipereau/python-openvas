@@ -81,3 +81,5 @@ class ParseScan:
 	response = f.read()
 	f.close()
 	print("\033[32mJSON Sent!\033[0m")
+
+#Please make sure flume channel capacity are big enough to send a big json in case there are lot of vulnerabilities
