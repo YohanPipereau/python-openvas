@@ -14,33 +14,33 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
     sock.connect(unixsocket_path)
     #sock.setblocking(False)
     for line in message.splitlines(True):
-	if line == "< OTP/2.0 >\n":
-	    sock.send(line)
-	    time.sleep(1)
-	else:
-	    sock.send(line)
-	    time.sleep(0.01)
+        if line == "< OTP/2.0 >\n":
+            sock.send(line)
+            time.sleep(1)
+        else:
+            sock.send(line)
+            time.sleep(0.01)
     if verbose == False:
-	while True:
-	    try:
-		sock.settimeout(timer)
-		data = sock.recv(1024)
-		sock.settimeout(None)
-		outputVar += data
-		if "<|> BYE" in data:
-		    return(outputVar)
-	    except socket.timeout:
-		return(outputVar)
+        while True:
+            try:
+                sock.settimeout(timer)
+                data = sock.recv(1024)
+                sock.settimeout(None)
+                outputVar += data
+                if "<|> BYE" in data:
+                    return(outputVar)
+            except socket.timeout:
+                return(outputVar)
     else:
-	while True:
-	    try:
-		sock.settimeout(timer)
-		data = sock.recv(1024)
-		sock.settimeout(None)
-		outputVar += data
-		if "<|> BYE" in data:
-		    return(outputVar)
-		print(data)
-	    except socket.timeout:
-		print("timeout")
-		return(outputVar)
+        while True:
+            try:
+                sock.settimeout(timer)
+                data = sock.recv(1024)
+                sock.settimeout(None)
+                outputVar += data
+                if "<|> BYE" in data:
+                    return(outputVar)
+                print(data)
+            except socket.timeout:
+                print("timeout")
+                return(outputVar)
