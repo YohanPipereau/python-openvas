@@ -7,7 +7,7 @@ class Email:
     def __init__(self, msg,destinationAddr):
 	self.msg = msg #The report to send after parsing and blacklisting
         self.destinationAddr = destinationAddr
-	
+
     #Encoding UTF8
     #Parsing the header: From, To, Subject
     def sendEmail(self):

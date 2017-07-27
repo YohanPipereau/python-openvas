@@ -8,8 +8,8 @@ from Email import *
 
 def valid_ip(address):
     #check if an ip is valid or not
-    try: 
-        b1 = socket.inet_pton(socket.AF_INET6,address) 
+    try:
+        b1 = socket.inet_pton(socket.AF_INET6,address)
         return True
     except:
     	try:
@@ -41,7 +41,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 	oid = ParseOid(parserMatch,outputVar) #Let's parse the answer of the scanner
 	oid.SectionParser()
 	#print the families available:
-	print(oid.familyDict.keys())	
+	print(oid.familyDict.keys())
 	sys.exit(0)
 
     elif opt in ("-h", "--help"):
@@ -55,7 +55,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     \033[1m -l \033[0m  List the families available (ex: Windows, Linux, Cisco, etc)
     \033[1m -s \033[0m  Send the report to someone@example.com by email
 
- 
+
     \033[1m --all \033[0m 	    Scan all the families
     \033[1m --help \033[0m          get some help
     \033[1m --list-families \033[0m List the families available (ex: Windows, Linux, Cisco, etc)
@@ -78,7 +78,7 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
   	else:
 	    print("\033[1m\033[31mInvalid IP format !\033[0m \nYet, IPv6 and IPv4 handled.")
 	    sys.exit(1)
-		
+
     elif opt in ("-f","--scan-families"):
 	familyScan = arg.split(",")
 	scanAll = False
@@ -110,9 +110,11 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     familyList = oid.familyDict.keys()
     oidList = []
     if scanAll == True: #Let's scan all the families
+        oidList = [family.keys() for family in oid.familyDict.values()]
 	for i in familyList:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
     else:
+        oidList = [family.keys() for (name, family) in oid.familyDict.items() if name in familyScan]
 	for i in familyScan:
 	   oidList=oidList + oid.familyDict[i].keys() #output the oid in a list of the i family of familyList
     oidString = ';'.join(oidList)
