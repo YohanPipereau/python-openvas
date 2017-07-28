@@ -19,11 +19,11 @@ def RunScan(scanAll,timeout,familyDict,familyScan,ipScan):
     if scanAll: #Let's scan all the families
         oidListFamily = [ family.keys() for family in familyDict.values() ]
 	oidList = [ x for i in oidListFamily for x in i ] 
+	print(oidList)
     else: #scan families given in argument
         oidListFamily = [ family.keys() for (name, family) in familyDict.items() if name in familyScan]
 	oidList = [ x for i in oidListFamily for x in i ] 
     oidString = ';'.join(oidList)
-    oidString[:-1] #Remove the first ","
     confFile = open("conf/scan.conf").read() #Read the content of the configuration file --> confFile
     message = """< OTP/2.0 >
 CLIENT <|> PREFERENCES <|>
