@@ -7,14 +7,48 @@ This python code aims at interacting directly with openvassd, also named openvas
 * Indicate the path to the unix socket used by openvassd : (by default: /var/run/openvassd.sock)
 * Sort out the NVT by the OS/devices targeted called families (Ubuntu, Cisco, gentoo, ...)
 
+#Required Packages and program
+
+*openvas-manager (optional)
+-/usr/bin/greenbone-certdata-sync
+-/usr/bin/greenbone-scapdata-sync
+-/usr/bin/openvas-certdata-sync
+-/usr/bin/openvas-migrate-to-postgres
+-/usr/bin/openvas-portnames-update
+-/usr/bin/openvas-scapdata-sync
+-/usr/bin/openvasmd
+
+*openvas-scanner (required)
+-/usr/bin/greenbone-nvt-sync
+-/usr/bin/openvas-mkcert
+-/usr/bin/openvas-mkcert-client
+-/usr/bin/openvas-nvt-sync
+-/usr/bin/openvassd
+
+*openvas-libraries (???)
+-/usr/bin/openvas-nasl
+-/usr/bin/openvas-nasl-lint
+
+*openvas-cli (optional)
+-/usr/bin/check_omp
+-/usr/bin/omp
+-/usr/bin/omp-dialog
+
+*greenbone-security-assistant (optional)
+-/usr/bin/gsad
+
+
 # Required configuration:
 
-You must have installed openvassd and use the OTP scanners. You can check that by running:
-openvasmd --get-scanners to get the UUID of the scanners
-Then you can verify which type of scanner it is (OSP or OTP) by running:
-openvasmd --verify-scanner=<UUID scanner>
+* openvas-handler only works with OTP scanners
+* openvas-scanner version required is >= 5.1.0 which implements unix socket (otherwise change the code to talk to TCP socket)
+* Add/Change the following line to your /etc/openvas/openvassd.conf: kb_location = /var/run/redis/redis.sock
+* Add/Change the following lines to your /etc/redis.conf:
+unixsocket /var/run/redis/redis.sock
+unixsocketperm 700
+port 0
+timeout 0
 
-openvasmd is not required with this code
 
 # Use the OTP Shell
 
@@ -34,8 +68,9 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
 CLIENT <|> PREFERENCES <|>
 plugin_set <|> 1.3.6.1.4.1.25623.1.0.810330
 port_range <|> value_of_port
+(lot of options here, please read conf/scan.conf)
 <|> CLIENT
-CLIENT <|> LONG_ATTACK
+CLIENT <|> LONG_ATTACK 
 length_of_ip (ex:12)
 host_ip (ex:100.100.50.1) ou 188.184.88.1
 
@@ -54,3 +89,16 @@ CLIENT <|> STOP_WHOLE_TEST <|> CLIENT
 # Resources:
 You might want to take a look at the former commands: http://www.openvas.org/compendium/otp-commands.html
 or just read opevas-scanner source code: https://wald.intevation.org/scm/viewvc.php/trunk/openvas-scanner/src/?root=openvas
+
+# Bug report
+
+* openvas-scanner hangs after reboot and when you strace it seems the error comes after the connection with the redis.sock:
+-Try to empty the redis database: redis-cli -s /var/run/redis/redis.sock flushall
+-Check the database is indeed clear: redis-cli -s /var/run/redis/redis.sock dbsize
+
+* openvas-scanner fails to start:
+-Check in /var/run/ if you have a openvassd.pid file, it is due to openvas-scanner launched without systemd
+-kill openvas-scanner: pkill -9 openvassd
+-remove the pid file: rm /var/run/openvassd.pid
+-Relaunch the service: systemctl restart openvas-scanner
+-Cross your fingers
