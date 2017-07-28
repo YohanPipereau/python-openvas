@@ -42,7 +42,6 @@ class ParseScan:
                     nameOfOid = self.familyDict[familyOfOid][oidNumber]["name"]
                     self.report += "\n***** VULNERABILITY : " + motivParsed[4] + nameOfOid + ":\n"
                     self.report += motivParsed[3]
-	return(self.report)
 
     def ParserJSON(self):
         jsonDict=[] #jsonDict is an array containing the Json Dictionnary

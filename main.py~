@@ -1,18 +1,6 @@
 #This aims at parsing the CLI args
 import sys, signal, re, socket, argparse #General module
-import SocketConnect, Email, ParseOid, ParseScan #Personnal class
-
-def valid_ip(address):
-    #check if an ip is valid or not
-    try:
-        b1 = socket.inet_pton(socket.AF_INET6,address)
-        return True
-    except:
-        try:
-            b2 = socket.inet_pton(socket.AF_INET,address)
-            return True
-        except:
-           return False
+import SocketConnect, Email, ParseOid, ParseScan, Ipv4v6 #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
@@ -25,8 +13,10 @@ parser.add_argument('-s', '--email', metavar="x1@example.com,x2@example.com", ty
 parser.add_argument('-t', '--timeout', type=int, nargs=1, help="Set a timeout for the scan depending if the firewall is up or down. Default is 300s.", dest="timeout")
 args = parser.parse_args()
 
+print(args)
+
 if args.list_families:
-    print("\033[32mWait for job to be completed, it can take a few seconds ...\033[0m")
+    print("\033[32mWait, we are retrieving the families and oid of the vulnerabilities ...\033[0m")
     message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -39,28 +29,13 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     print(oid.familyDict.keys())
     sys.exit(0)
 
-elif args.ip:
-    regbool = valid_ip(args.ip[0])
-    if regbool == True:
-        #Prepare arguments for the attack
-        ipScan = args.ip[0]
-    else:
-        print("\033[1m\033[31mInvalid IP format !\033[0m \nYet, IPv6 and IPv4 handled.")
-        sys.exit(1)
+elif args.ip: #Before Giving the ip to the scanner, test if it is a correct ip.
+    isIp = Ipv4v6.Ipv4v6(args.ip[0])
+    isIp.valid_ip()
 
-elif args.family:
-    print("hello")
-    print(args.family)
-
-elif args.email:
-    destinationList = arg.split(",")
-
-#Do we have all the required args to run the scan
-runScanBool = not ipScan and not familyScan
-#Then run the scan:
-if not runScanBool:
+if args.ip and args.family: #Check that we have at least an ip and a family to run the scan
     print("\033[34mDon't forget to deactivate your firewall !\033[0m")
-    print("\033[32mWait, we are retrieving the ID of the vulnerabilities to scan ...\033[0m")
+    print("\033[32mWait, we are retrieving the families and oid of the vulnerabilities ...\033[0m")
     message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -90,12 +65,11 @@ plugin_set <|> """ + oidString + "\n" + confFile + str(len(ipScan)) + "\n" +ipSc
     outputScan = SocketConnect.SocketConnect(message,300,True) #Launch the Socket interaction in verbose mode with a wait time of  300s to detect errors
     ####Parsing the Scan Section
     scanReport = ParseScan.ParseScan(outputScan,ipScan,oid.familyDict)
-    ##### JSON Section
-    if args.json: #Parse in Json
+    if args.json: #user asked for json sent to flume
         scanReport.ParserJSON()
-    #####Email Section
-    if 'destinationList' in locals():
-        scanReport.ParserEmail()
-        s = Email.Email(scanReport.report,destinationList)
+    if args.email: #If the list of destination email has been given, then...
+        reportAfterParsing = scanReport.ParserEmail()
+        s = Email.Email(reportAfterParsing,args.email)
         s.sendEmail()
-        print("\033[32mEmail Sent!\033[0m")
+else:
+    print("\033[31mArguments missing !\033[0m")

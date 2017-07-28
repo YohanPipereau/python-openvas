@@ -15,6 +15,5 @@ class Email:
         self.msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % ("openvas@cern.ch", ", ".join(self.destinationAddr), "OpenVAS report")) + self.msg
         smtpObj.sendmail("openvas@cern.ch", self.destinationAddr,self.msg)
         smtpObj.quit() #end the SMTP connection
-	print("\033[32mEmail Sent!\033[0m")
 
 
