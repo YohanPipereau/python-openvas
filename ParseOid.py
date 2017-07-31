@@ -1,9 +1,9 @@
 #This file aims at parsing the NVT_INFO output to get all the oid
 
 class ParseOid():
-    def __init__(self,parserMatch,scanData):
+    def __init__(self,scanData):
         self.scanData = scanData
-        self.parserMatch = parserMatch #when parserMatch is detected -> match section begins
+        self.parserMatch = "SERVER <|> PLUGIN_LIST <|>\n"
         self.familyDict = {}
 
     def SectionParser(self):
@@ -12,11 +12,9 @@ class ParseOid():
         for line in scanList:
             if line == self.parserMatch:
                 parsingTrigger = True
-         #Every object has a parser which is called if we detect a line which match parserMatch
-            if parsingTrigger == True:
+            if parsingTrigger == True: #Every object has a parser which is called if we detect a line which match parserMatch
                     self.Parser(line)
-            #Detect end of the matching section
-            if line == "<|> SERVER":
+            if line == "<|> SERVER": #Detect end of the matching section
                 parsingTrigger = False
 
     def Parser(self,line):

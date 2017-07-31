@@ -24,15 +24,7 @@ class ParseScan:
         print("\033[32mParsing Scan to create report ...\033[0m")
         scanList=self.outputScan.split("SERVER <|>")
         for motiv in scanList:
-            #TIME Flag detected
-            if "TIME <|>" in motiv:
-                motivParsed = motiv.split("<|>")
-                if "SCAN_START" in motivParsed[1]:
-                    self.report += "Scan started on" + motivParsed[2] + "\n"
-                elif "SCAN_END" in motivParsed[1]:
-                    self.report += "Scan ended on" + motivParsed[2] + "\n"
-            #ALARM Flag detected
-            elif "ALARM <|>" in motiv:
+            if "ALARM <|>" in motiv: #ALARM Flag detected
                 motivParsed = motiv.split("<|> ")
                 oidNumber = motivParsed[4].strip()
                 if oidNumber in self.blacklist:

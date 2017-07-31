@@ -2,9 +2,7 @@
 
 import smtplib
 
-from email.parser import Parser
 from email.mime.text import MIMEText
-
 
 class Email:
 
