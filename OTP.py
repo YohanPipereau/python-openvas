@@ -12,15 +12,16 @@ CLIENT <|> COMPLETE_LIST <|> CLIENT
     oid.SectionParser()
     return(oid.familyDict)
 
-def RunScan(scanAll,timeout,familyDict,familyScan,ipScan,verbose):
-    print("\033[32mPlease Wait, while we scan the device ...\033[0m")
-    familyList =familyDict.keys()
+def familyToScan(scanAll, familyScan, familyDict):
     if scanAll: #Let's scan all the families
         oidListFamily = [ family.keys() for family in familyDict.values() ]
-	oidList = [ x for i in oidListFamily for x in i ] 
     else: #scan families given in argument
         oidListFamily = [ family.keys() for (name, family) in familyDict.items() if name in familyScan]
-	oidList = [ x for i in oidListFamily for x in i ] 
+    oidList = [ x for i in oidListFamily for x in i ] 
+    return(oidList)
+
+def RunScan(timeout,ipScan,verbose,oidList):
+    print("\033[32mPlease Wait, while we scan the device ...\033[0m")
     oidString = ';'.join(oidList)
     confFile = open("conf/scan.conf").read() #Read the content of the configuration file --> confFile
     message = """< OTP/2.0 >
