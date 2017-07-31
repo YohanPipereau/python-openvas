@@ -1,3 +1,7 @@
+"""
+    This file contains the Socket tool function to interact with the scanner socket.
+"""
+
 import os, socket, time, sys, select
 
 def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openvassd.sock'):

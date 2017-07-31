@@ -1,4 +1,7 @@
-#Class to check wether the ip is correct or not
+"""
+    Class to check wether the ip is correct or not in the args of main module
+"""
+
 import socket, sys
 
 class Ipv4v6:

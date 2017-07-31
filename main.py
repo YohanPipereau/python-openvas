@@ -1,4 +1,34 @@
-#This aims at parsing the CLI args
+"""
+    python-openvas
+    ================
+
+    This program interact with openvassd (openvas-scanner) to scan an host.
+    It features:
+    *email report sent to local smtp server
+    *json output sent to local flume server
+    *IPv4/IPv6 scans
+    
+    Common use:
+    -----------
+    Run the default scan and receive the report by email by launching:
+    python-openvas -v -i 8.8.8.8 -s john@example.com
+
+    Example:
+    --------
+    python-openvas -v -i 8.8.8.8 -f General, Malware -s john@example.com
+    python-openvas -v -i 8.8.8.8 -j -a
+
+    Advices:
+    --------
+    Please make sure flume channel capacity are big enough to send a big json 
+    in case there are lot of vulnerabilities.
+
+    main module:
+    ------------
+    This aims at parsing the CLI args, and runing the different functions.
+    
+"""
+
 import sys, signal, re, socket, argparse #General module
 import Email, ParseScan, Ipv4v6, OTP #Personnal class
 

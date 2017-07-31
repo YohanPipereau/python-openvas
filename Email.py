@@ -1,4 +1,6 @@
-#This script aims at sending the report by email. Working only if local SMTP configured.
+"""
+    This module aims at sending the report by email to local smtp server.
+"""
 
 import smtplib
 

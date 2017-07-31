@@ -1,6 +1,27 @@
-#This file aims at parsing the NVT_INFO output to get all the oid
-
 class ParseOid():
+    """
+	This class aims at parsing the NVT_INFO output of the scanner to get a
+	dictionnary of the oid, 
+
+	Format of the dictionnaryn of families:
+	---------------------------------------
+	{
+	family1 { 
+		 oid1 {
+		       "name" : name,
+		       "description" : desription
+		      },
+		 ...
+		 },
+	...
+	}
+
+	Format of the NVT_INFO output of the scanner:
+	---------------------------------------------
+	oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|> 
+	ID of revision <|> CVE id <|> BID (bugtrack id) <|> URL <|> Description \n
+    """
+
     def __init__(self,scanData):
         self.scanData = scanData
         self.familyDict = {}
@@ -33,4 +54,3 @@ class ParseOid():
 	    sys.exit(2)
 
 
-#oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|> ID of revision <|> CVE id <|> BID (bugtrack id) <|> URL <|> Description \n

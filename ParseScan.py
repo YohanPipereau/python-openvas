@@ -1,9 +1,12 @@
-#This file aims at parsing the report of the server to 2 format: email readable format and elasticsearch Json format
-#Be careful the JSON parser has been implemented to output a JSON file directly on the server so that it can be used by Flume using an HTTP request
-#the urllib2 lib is called urllib.requests in python3 change it if needed
+
 import time,json,collections, requests
 
 class ParseScan:
+
+    """
+	This class aims at parsing the report of the server to 2 format:
+	email readable format and elasticsearch Json format
+    """
 
     def __init__(self,outputScan,target,familyDict):
         self.outputScan = outputScan
@@ -85,5 +88,3 @@ class ParseScan:
         print(self.jsonOutput)
         requests.post('http://localhost:5140/post', json={"key": "value"})
         print("\033[32mJSON Sent!\033[0m")
-
-#Please make sure flume channel capacity are big enough to send a big json in case there are lot of vulnerabilities
