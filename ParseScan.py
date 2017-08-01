@@ -1,4 +1,4 @@
-import time,json,collections, requests
+import time,json,collections,requests, socket
 import Color
 
 class ParseScan:
@@ -47,7 +47,7 @@ class ParseScan:
         templateJson = {}
         templateJson["headers"] = {}
         templateJson["headers"]["timestamp"] = str(int(time.time()))
-        templateJson["headers"]["host"] = "openvas6.cern.ch"
+        templateJson["headers"]["host"] = socket.gethostname()
         print(Color.GREEN + "Parsing Scan to create report ...") + Color.END
         scanList=self.outputScan.split("SERVER <|>")
         for motiv in scanList:
