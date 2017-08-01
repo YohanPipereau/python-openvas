@@ -9,8 +9,9 @@ class IPTool:
     def __init__(self,address):
         self.address = address
 
-   def ValidDN(self,dn):
-        self.address = socket.gethostbyname(dn)
+    def ValidDN(self):
+        self.address = socket.gethostbyname(self.address)
+	self.ValidIP() #is the IP received a good IP
 
     def ValidIP(self):
         """
@@ -18,7 +19,7 @@ class IPTool:
         """
         try: #try IPv6
             b1 = socket.inet_pton(socket.AF_INET6,self.address)
-        except:
+        except: #try IPv4
             b2 = socket.inet_pton(socket.AF_INET,self.address)
 
     def ValidDNIP(self):
@@ -29,7 +30,7 @@ class IPTool:
             self.ValidDN()
         except:
             try:
-                ValidIP()
+                self.ValidIP()
             except:
                 print("\033[1m\033[31mInvalid IP format !\033[0m \nYet, IPv6 and IPv4 handled.")
                 sys.exit(1)

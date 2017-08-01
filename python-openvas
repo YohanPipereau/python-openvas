@@ -32,7 +32,7 @@
 """
 
 import sys, signal, re, socket, argparse #General module
-import Email, ParseScan, Ipv4v6, OTP #Personnal class
+import Email, ParseScan, IPTool, OTP #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
