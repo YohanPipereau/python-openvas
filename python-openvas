@@ -43,11 +43,18 @@ parser.add_argument('-j', '--json', help="Output the report in JSON and send it 
 parser.add_argument('-l', '--list-families', help="List the families available (ex: Windows, Linux, Cisco, etc)", action='store_true')
 parser.add_argument('-e', '--email', metavar="x1@example.com, x2@example.com", type=str, nargs="+", help="Send the report to someone@example.com by email", dest="email")
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
-parser.add_argument('--timeout', type=int, nargs=1, help="Set a timeout for the scan depending if the firewall is up or down. Default is 300s.", dest="timeout",default=300)
+parser.add_argument('--scan-timeout', type=int, nargs=1, help="Set a timeout for the scan depending if the firewall is up or down. Default is 300s.", dest="scan_timeout",default=300)
+parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
+
+
+parser.add_argument('--initialize-timer', type=int, nargs=1, help="Set a timer to wait for the scanner answer at the beginning. Default is 1s.", dest="init_timer",default=1)
+parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help="Define the sender of the email report", dest="email_from", default="openvas@cern.ch")
+parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, help="Define the subject of the email. Default is Openvas Report", dest="email_subject", default="Openvas Report")
+
 args = parser.parse_args()
 
 if args.list_families:
-    familyDict = OTP.ListFamilies()
+    familyDict = OTP.ListFamilies(args.oid_timeout)
     print(familyDict.keys())
     sys.exit(0)
 
@@ -57,9 +64,9 @@ elif args.target: #Before Giving the ip to the scanner, test if it is a correct 
 
 if args.target and ( args.family or args.all): #Check that we have at least an ip and a family to run the scan
     print(Color.BLUE + "Don't forget to deactivate your firewall !" + Color.END)
-    familyDict = OTP.ListFamilies()
+    familyDict = OTP.ListFamilies(args.oid_timeout)
     oidList = OTP.FamilyToScan(args.all,args.family,familyDict)
-    outputScan = OTP.RunScan(args.timeout,ipTarget,args.verbose,oidList)
+    outputScan = OTP.RunScan(args.scan_timeout,ipTarget,args.verbose,oidList)
     scanReport = ParseScan.ParseScan(outputScan,ipTarget,familyDict) #Parsing the Scan Section
     if args.json: #user asked for json sent to flume
         scanReport.ParserJSON()

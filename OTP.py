@@ -4,7 +4,7 @@
 import SocketConnect, ParseOid
 import Color
 
-def ListFamilies():
+def ListFamilies(oidTimeout):
     """
         This function is called from the main file.
         It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
@@ -14,7 +14,7 @@ def ListFamilies():
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
-    outputVar = SocketConnect.SocketConnect(message,3) #outputVar is the answer of scanner to message
+    outputVar = SocketConnect.SocketConnect(message,oidTimeout) #outputVar is the answer of scanner to message
     oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
     oid.Parser(outputVar)
     return(oid.familyDict)
