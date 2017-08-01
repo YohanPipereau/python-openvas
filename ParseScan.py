@@ -4,8 +4,8 @@ import time,json,collections, requests
 class ParseScan:
 
     """
-	This class aims at parsing the report of the server to 2 format:
-	email readable format and elasticsearch Json format
+        This class aims at parsing the report of the server to 2 format:
+        email readable format and elasticsearch Json format
     """
 
     def __init__(self,outputScan,target,familyDict):
@@ -18,7 +18,7 @@ class ParseScan:
 
     def search(self, oid):
         """
-            Search for the family of searchFor argument.
+            Search for the family of the oid given in argument.
         """
         for k in self.familyDict:
             for v in self.familyDict[k]:
@@ -40,7 +40,7 @@ class ParseScan:
                     nameOfOid = self.familyDict[familyOfOid][oidNumber]["name"]
                     self.report += "\n***** VULNERABILITY : " + motivParsed[4] + nameOfOid + ":\n"
                     self.report += motivParsed[3]
-	return(self.report)
+        return(self.report)
 
     def ParserJSON(self):
         jsonDict=[] #jsonDict is an array containing the Json Dictionnary

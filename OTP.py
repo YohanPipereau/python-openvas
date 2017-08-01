@@ -15,8 +15,8 @@ CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
 """
     outputVar = SocketConnect.SocketConnect(message,3) #outputVar is the answer of scanner to message
-    oid = ParseOid.ParseOid(outputVar) #Let's parse the answer of the scanner
-    oid.SectionParser()
+    oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
+    oid.Parser(outputVar)
     return(oid.familyDict)
 
 def FamilyToScan(scanAll, familyScan, familyDict):

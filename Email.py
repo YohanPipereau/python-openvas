@@ -13,15 +13,15 @@ class Email:
         self.destinationAddr = destinationAddr
 
     def setHeaders(self):
-	self.msg['Subject'] = 'Openvas Report'
-	self.msg['From'] = 'openvas@cern.ch'
-	self.msg['To'] = ",".join(self.destinationAddr)
+        self.msg['Subject'] = 'Openvas Report'
+        self.msg['From'] = 'openvas@cern.ch'
+        self.msg['To'] = ",".join(self.destinationAddr)
 
     def sendEmail(self):
         smtpObj = smtplib.SMTP('127.0.0.1')
-	self.setHeaders()
+        self.setHeaders()
         smtpObj.sendmail('openvas@cern.ch', self.destinationAddr,self.msg.as_string())
         smtpObj.quit() #end the SMTP connection
-	print("\033[32mEmail Sent!\033[0m")
+        print("\033[32mEmail Sent!\033[0m")
 
 

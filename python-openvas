@@ -65,11 +65,11 @@ if args.ip and ( args.family or args.all): #Check that we have at least an ip an
         scanReport.ParserJSON()
     if args.email: #If the list of destination email has been given, then...
         reportAfterParsing = scanReport.ParserEmail()
-	if reportAfterParsing.strip():
+        if reportAfterParsing.strip():
             s = Email.Email(reportAfterParsing,args.email)
             s.sendEmail()
-	else:
-	    print("\033[32mNo Vulnerability detected, then no email sent!\033[0m")
-	    sys.exit(0)
+        else:
+            print("\033[32mNo Vulnerability detected, then no email sent!\033[0m")
+            sys.exit(0)
 else:
     print("\033[31mArguments missing !\033[0m")
