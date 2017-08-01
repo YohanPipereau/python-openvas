@@ -3,12 +3,12 @@ import sys
 class ParseOid():
     """
 	This class aims at parsing the NVT_INFO output of the scanner to get a
-	dictionnary of the oid, 
+	dictionnary of the oid,
 
-	Format of the dictionnaryn of families:
+	Format of the dictionnary of families:
 	---------------------------------------
 	{
-	family1 { 
+	family1 {
 		 oid1 {
 		       "name" : name,
 		       "description" : desription
@@ -20,7 +20,7 @@ class ParseOid():
 
 	Format of the NVT_INFO output of the scanner:
 	---------------------------------------------
-	oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|> 
+	oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|>
 	ID of revision <|> CVE id <|> BID (bugtrack id) <|> URL <|> Description \n
     """
 

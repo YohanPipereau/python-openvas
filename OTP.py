@@ -13,13 +13,13 @@ def ListFamilies():
     message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
-"""    
+"""
     outputVar = SocketConnect.SocketConnect(message,3) #outputVar is the answer of scanner to message
     oid = ParseOid.ParseOid(outputVar) #Let's parse the answer of the scanner
     oid.SectionParser()
     return(oid.familyDict)
 
-def familyToScan(scanAll, familyScan, familyDict):
+def FamilyToScan(scanAll, familyScan, familyDict):
     """
         Called from the main file.
 	It puts the oid of the families to scan according to the arguments:
@@ -29,14 +29,14 @@ def familyToScan(scanAll, familyScan, familyDict):
         oidListFamily = [ family.keys() for family in familyDict.values() ]
     else: #scan families given in argument
         oidListFamily = [ family.keys() for (name, family) in familyDict.items() if name in familyScan]
-    oidList = [ x for i in oidListFamily for x in i ] 
+    oidList = [ x for i in oidListFamily for x in i ]
     return(oidList)
 
 def RunScan(timeout,ipScan,verbose,oidList):
     """
         Called from the main file.
         It runs the scan by talking to the unixsocket of the scanner, then
-        it outputs a file containing all the information of the scanner scan. 
+        it outputs a file containing all the information of the scanner scan.
     """
     print("\033[32mPlease Wait, while we scan the device ...\033[0m")
     oidString = ';'.join(oidList)

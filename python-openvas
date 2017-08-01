@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
     python-openvas
     ================
@@ -7,7 +9,7 @@
     *email report sent to local smtp server
     *json output sent to local flume server
     *IPv4/IPv6 scans
-    
+
     Common use:
     -----------
     Run the default scan and receive the report by email by launching:
@@ -20,13 +22,13 @@
 
     Advices:
     --------
-    Please make sure flume channel capacity are big enough to send a big json 
+    Please make sure flume channel capacity are big enough to send a big json
     in case there are lot of vulnerabilities.
 
     main module:
     ------------
     This aims at parsing the CLI args, and runing the different functions.
-    
+
 """
 
 import sys, signal, re, socket, argparse #General module
@@ -56,7 +58,7 @@ elif args.ip: #Before Giving the ip to the scanner, test if it is a correct ip.
 if args.ip and ( args.family or args.all): #Check that we have at least an ip and a family to run the scan
     print("\033[34mDon't forget to deactivate your firewall !\033[0m")
     familyDict = OTP.ListFamilies()
-    oidList = OTP.familyToScan(args.all,args.family,familyDict)
+    oidList = OTP.FamilyToScan(args.all,args.family,familyDict)
     outputScan = OTP.RunScan(args.timeout,args.ip[0],args.verbose,oidList)
     scanReport = ParseScan.ParseScan(outputScan,args.ip[0],familyDict) #Parsing the Scan Section
     if args.json: #user asked for json sent to flume
