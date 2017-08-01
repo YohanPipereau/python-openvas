@@ -28,12 +28,12 @@ class ParseOid():
         self.familyDict = {}
 
     def Parser(self,scanData):
-        scanList = scanData.splitlines(True)
+        scanList = scanData.splitlines()
         parsingTrigger = False
         for line in scanList:
-            if line == "SERVER <|> PLUGIN_LIST <|>\n":
+            if line == "SERVER <|> PLUGIN_LIST <|>":
                 parsingTrigger = True
-            elif line == "<|> SERVER\n": #Detect end of the matching section
+            elif line == "<|> SERVER": #Detect end of the matching section
                 return 0
             elif parsingTrigger == True: #Every object has a parser which is called if we detect a line which match parserMatch
                 self.ParserLine(line)
