@@ -1,3 +1,5 @@
+import sys
+
 class ParseOid():
     """
 	This class aims at parsing the NVT_INFO output of the scanner to get a
@@ -50,7 +52,7 @@ class ParseOid():
             if familyFound == False:#If we did not find the family then we need to append the family to the dict
                 self.familyDict.update({oidList[4] : {oidList[0] : { "name" : oidList[1], "description" : oidList[9]}}})
 	else:
-	    print("Error! oidList has a size different from 10 characters.")
+	    print("Error! oidList has a size different of 10 characters.")
 	    sys.exit(2)
 
 

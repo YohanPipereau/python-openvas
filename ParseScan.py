@@ -16,10 +16,13 @@ class ParseScan:
             self.blacklist=blacklistFile.read().splitlines() #put the file into a list
         self.familyDict = familyDict #we need the familyDict for the name & description of the plugin oid
 
-    def search(self, searchFor):
+    def search(self, oid):
+        """
+            Search for the family of searchFor argument.
+        """
         for k in self.familyDict:
             for v in self.familyDict[k]:
-                if searchFor in v:
+                if oid == v:
                     return k
         return None
 
