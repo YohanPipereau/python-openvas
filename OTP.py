@@ -1,15 +1,15 @@
 """
     This module handles OTP communication with the scanner.
 """
-
 import SocketConnect, ParseOid
+import Color
 
 def ListFamilies():
     """
         This function is called from the main file.
         It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
     """
-    print("\033[32mWait, we are retrieving the families and oid of the vulnerabilities ...\033[0m")
+    print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
     message= """< OTP/2.0 >
 CLIENT <|> NVT_INFO <|> CLIENT
 CLIENT <|> COMPLETE_LIST <|> CLIENT
@@ -38,7 +38,7 @@ def RunScan(timeout,ipScan,verbose,oidList):
         It runs the scan by talking to the unixsocket of the scanner, then
         it outputs a file containing all the information of the scanner scan.
     """
-    print("\033[32mPlease Wait, while we scan the device ...\033[0m")
+    print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
     oidString = ';'.join(oidList)
     confFile = open("conf/scan.conf").read() #Read the content of the configuration file --> confFile
     message = """< OTP/2.0 >

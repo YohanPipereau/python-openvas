@@ -1,12 +1,11 @@
-"""
-    This module aims at sending the report by email to local smtp server.
-"""
-
-import smtplib
-
+import smtplib, Color
 from email.mime.text import MIMEText
 
 class Email:
+    
+    """
+	This class aims at sending the report by email to local smtp server.
+    """
 
     def __init__(self, msg,destinationAddr):
         self.msg = MIMEText(msg) #convert to MIME type to set headers To, From, Subject
@@ -22,6 +21,4 @@ class Email:
         self.setHeaders()
         smtpObj.sendmail('openvas@cern.ch', self.destinationAddr,self.msg.as_string())
         smtpObj.quit() #end the SMTP connection
-        print("\033[32mEmail Sent!\033[0m")
-
-
+        print(Color.GREEN + "Email Sent!" + Color.END)

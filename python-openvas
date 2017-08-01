@@ -69,7 +69,7 @@ if args.target and ( args.family or args.all): #Check that we have at least an i
             s = Email.Email(reportAfterParsing,args.email)
             s.sendEmail()
         else:
-            print("\033[32mNo Vulnerability detected, then no email sent!\033[0m")
+            print(Color.GREEN + "No Vulnerability detected, then no email sent!" + Color.END)
             sys.exit(0)
 else:
-    print("\033[31mArguments missing !\033[0m")
+    print(Color.RED + "Arguments missing !" + Color.END)

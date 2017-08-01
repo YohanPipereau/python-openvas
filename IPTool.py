@@ -1,10 +1,10 @@
-"""
-    Class to check wether the ip is correct or not in the args of main module
-"""
-
 import socket, sys
+import Color
 
 class IPTool:
+    """
+	Class to check wether the ip is correct or not in the args of main module
+    """
 
     def __init__(self,address):
         self.address = address #Ip or Domain Name
@@ -26,7 +26,7 @@ class IPTool:
             try:
                 b2 = socket.inet_pton(socket.AF_INET,self.address)
             except:
-                print("\033[1m\033[31mInvalid IP format !\033[0m \nYet, IPv6 and IPv4 handled.")
+                print(Color.RED + "Invalid IP format !\nYet, IPv6 and IPv4 handled." + Color.END)
                 sys.exit(1)
 
     def ValidDNIP(self):

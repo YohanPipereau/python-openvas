@@ -1,5 +1,5 @@
-
 import time,json,collections, requests
+import Color
 
 class ParseScan:
 
@@ -27,7 +27,7 @@ class ParseScan:
         return None
 
     def ParserEmail(self):
-        print("\033[32mParsing Scan to create report ...\033[0m")
+        print(Color.GREEN + "Parsing Scan to create report ..." + Color.END)
         scanList=self.outputScan.split("SERVER <|>")
         for motiv in scanList:
             if "ALARM <|>" in motiv: #ALARM Flag detected
@@ -48,7 +48,7 @@ class ParseScan:
         templateJson["headers"] = {}
         templateJson["headers"]["timestamp"] = str(int(time.time()))
         templateJson["headers"]["host"] = "openvas6.cern.ch"
-        print("\033[32mParsing Scan to create report ...\033[0m")
+        print(Color.GREEN + "Parsing Scan to create report ...") + Color.END
         scanList=self.outputScan.split("SERVER <|>")
         for motiv in scanList:
             #LOG Flag detected
@@ -90,4 +90,4 @@ class ParseScan:
         self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json
         print(self.jsonOutput)
         requests.post('http://localhost:5140/post', json={"key": "value"})
-        print("\033[32mJSON Sent!\033[0m")
+        print(Color.GREEN + "JSON Sent!" + Color.END)
