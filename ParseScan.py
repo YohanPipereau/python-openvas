@@ -21,8 +21,7 @@ class ParseScan:
             Search for the family of the oid given in argument.
         """
         for k in self.familyDict:
-            for v in self.familyDict[k]:
-                if oid == v:
+            if oid in self.familyDict[k]:
                     return k
         return None
 
@@ -43,6 +42,10 @@ class ParseScan:
         return(self.report)
 
     def ParserJSON(self):
+        """
+            ParserJson est le Parser qui renvoie l
+
+        """
         jsonDict=[] #jsonDict is an array containing the Json Dictionnary
         templateJson = {}
         templateJson["headers"] = {}
