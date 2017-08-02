@@ -41,10 +41,18 @@ class ParseScan:
                     self.report += motivParsed[3]
         return(self.report)
 
-    def ParserJSON(self):
+    def ParserJSON(self, flumeServer):
         """
-            ParserJson est le Parser qui renvoie l
-
+            ParserJson est le Parser qui renvoie le Json contenant
+            les logs du scan.
+            Afin de correspondre au JsonHandler de Flume, voici sa forme
+            [{
+            'headers' : {
+                        'timestamp' : timestamp,
+                        'host' : host
+                        },
+	    'body' : bodyJson
+            }]
         """
         jsonDict=[] #jsonDict is an array containing the Json Dictionnary
         templateJson = {}
@@ -54,43 +62,24 @@ class ParseScan:
         print(Color.GREEN + "Parsing Scan to create report ...") + Color.END
         scanList=self.outputScan.split("SERVER <|>")
         for motiv in scanList:
-            #LOG Flag detected
-            if "LOG <|>" in motiv:
-                motivParsed = motiv.split("<|> ")
-                jsonDict.append(templateJson) #append the templateJson dictionnary to the list
-                oidNumber = motivParsed[4].strip()
-                familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
-                bodyDict = {
+	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
+		motivParsed = motiv.split("<|> ")
+		jsonDict.append(templateJson) #append the templateJson dictionnary to the list
+		oidNumber = motivParsed[4].strip()
+		familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
+		bodyDict = {
 "target" : self.target ,
 "plugin" : {
         "name" : self.familyDict[familyOfOid][oidNumber]["name"],
         "description" : self.familyDict[familyOfOid][oidNumber]["description"],
         "oid" : oidNumber,
         "message" : str(motivParsed[3]),
-        "type": "LOG"
-}
-}
-                bodyJson = json.dumps(bodyDict)
-                jsonDict[len(jsonDict)-1]["body"] = bodyJson
-            #ALARM Flag detected
-            elif "ALARM <|>" in motiv:
-                motivParsed = motiv.split("<|> ")
-                jsonDict.append(templateJson)
-                oidNumber = motivParsed[4].strip()
-                familyOfOid = self.search(motivParsed[4].strip())  #We need to find the family of the oid
-                bodyDict = {
-"target" : self.target ,
-"plugin" : {
-        "name" : self.familyDict[familyOfOid][oidNumber]["name"],
-        "description" : self.familyDict[familyOfOid][oidNumber]["description"],
-        "oid" : oidNumber,
-        "message" : str(motivParsed[3]),
-        "type": "ALARM"
+        "type": "LOG" if "LOG <|>" in motiv else "ALARM"
 }
 }
                 bodyJson = json.dumps(bodyDict)
                 jsonDict[len(jsonDict)-1]["body"] = bodyJson
         self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json
         print(self.jsonOutput)
-        requests.post('http://localhost:5140/post', json={"key": "value"})
+        requests.post(flumeServer, json={"key": "value"})
         print(Color.GREEN + "JSON Sent!" + Color.END)
