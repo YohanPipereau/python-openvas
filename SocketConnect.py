@@ -4,7 +4,7 @@
 
 import os, socket, time, sys, select
 
-def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openvassd.sock'):
+def SocketConnect(message,timer,initialize_timer,verbose=False,unixsocket_path = '/var/run/openvassd.sock'):
     #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
     outputVar=""
     try:
@@ -18,10 +18,9 @@ def SocketConnect(message,timer,verbose=False,unixsocket_path = '/var/run/openva
     sock.connect(unixsocket_path)
     #sock.setblocking(False)
     for line in message:
-	print(line)
         if line == "< OTP/2.0 >":
             sock.send(line)
-            time.sleep(1)
+            time.sleep(initialize_timer)
         else:
             sock.send(line)
             time.sleep(0.01)
