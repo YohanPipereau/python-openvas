@@ -14,8 +14,8 @@ class Email:
 	self.email_subject = email_subject
 
     def setHeaders(self):
-        self.msg['Subject'] = email_subject
-        self.msg['From'] = email_from
+        self.msg['Subject'] = self.email_subject
+        self.msg['From'] = self.email_from
         self.msg['To'] = ",".join(self.destinationAddr)
 
     def sendEmail(self):

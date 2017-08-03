@@ -4,47 +4,48 @@
 
 import os, socket, time, sys, select
 
-def SocketConnect(message,timer,initialize_timer,verbose=False,unixsocket_path = '/var/run/openvassd.sock'):
-    #unixsocket_path is the socket of openvassd which it uses to communicate with redis and any manager
-    outputVar=""
-    try:
-        #Check the existence of the socket
-        os.path.isfile(unixsocket_path)
-    except OSError:
-        print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
+class SocketConnect:
 
-    ##Instantiate the socket and connect the client to it (the server is openvas-scanner)
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(unixsocket_path)
-    #sock.setblocking(False)
-    for line in message:
-        if line == "< OTP/2.0 >":
-            sock.send(line)
-            time.sleep(initialize_timer)
+    def __init__(self, oidTimeout, initialize_timer, unixsocket_path = '/var/run/openvassd.sock'):
+        self.oidTimeout = oidTimeout
+        self.initialize_timer = initialize_timer
+        self.unixsocket_path = unixsocket_path
+	try:
+             os.path.isfile(unixsocket_path) #Check the existence of the socket
+        except OSError:
+            print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
+       ##Instantiate the socket and connect the client to it (the server is openvas-scanner)
+        self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.sock.connect(unixsocket_path)
+
+
+    def Send(self,message):
+        for line in message:
+            if line == "< OTP/2.0 >":
+                self.sock.send(line)
+                time.sleep(initialize_timer)
+            else:
+                    self.sock.send(line)
+                    time.sleep(0.01)
+
+    def Receive(self, verbose=False):
+        outputVar=""
+        if verbose == True:
+            print_verbose = lambda x: sys.stdout.write(x)
         else:
-            sock.send(line)
-            time.sleep(0.01)
-    if verbose == False:
+            print_verbose = lambda x: None
         while True:
-            try:
-                sock.settimeout(timer)
-                data = sock.recv(1024)
-                sock.settimeout(None)
-                outputVar += data
-                if "<|> BYE" in data:
-                    return(outputVar)
-            except socket.timeout:
-                return(outputVar)
-    else:
-        while True:
-            try:
-                sock.settimeout(timer)
-                data = sock.recv(1024)
-                sock.settimeout(None)
-                outputVar += data
-                if "<|> BYE" in data:
-                    return(outputVar)
-                print(data)
-            except socket.timeout:
-                print("timeout")
-                return(outputVar)
+	    try:
+		self.sock.settimeout(self.oidTimeout)
+		data = self.sock.recv(1024)
+		self.sock.settimeout(None)
+		outputVar += data
+		if "<|> BYE" in data:
+		    return(outputVar)
+		print_verbose(data)
+	    except socket.timeout:
+		#print("timeout")
+		return(outputVar)
+
+    def Close(self):
+        pass #todo

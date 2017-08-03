@@ -11,7 +11,9 @@ def ListFamilies(oidTimeout,initialize_timer):
     """
     print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
     message= ['< OTP/2.0 >\n','CLIENT <|> NVT_INFO <|> CLIENT\n','CLIENT <|> COMPLETE_LIST <|> CLIENT\n']
-    outputVar = SocketConnect.SocketConnect(message,oidTimeout,initialize_timer) #outputVar is the answer of scanner to message
+    sock = SocketConnect.SocketConnect(oidTimeout,initialize_timer) #outputVar is the answer of scanner to message
+    sock.Send(message)
+    outputVar = sock.Receive() 
     oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
     oid.Parser(outputVar)
     return(oid.familyDict)
@@ -29,7 +31,7 @@ def FamilyToScan(scanAll, familyScan, familyDict):
     oidList = [ x for i in oidListFamily for x in i ]
     return(oidList)
 
-def RunScan(timeout,ipScan,verbose,oidList,initialize_timer):
+def RunScan(oidTimeout,ipScan,verbose,oidList,initialize_timer):
     """
         Called from the main file.
         It runs the scan by talking to the unixsocket of the scanner, then
@@ -40,5 +42,7 @@ def RunScan(timeout,ipScan,verbose,oidList,initialize_timer):
     with open('conf/scan.conf') as f:
         confFile = f.read().splitlines(True)#Read the content of the configuration file and let the CR !! important
     message = ['< OTP/2.0 >\n','CLIENT <|> PREFERENCES <|>\n','plugin_set <|>' + oidString + "\n"] + confFile +  [str(len(ipScan)) + "\n", ipScan +"\n"]
-    outputScan = SocketConnect.SocketConnect(message,timeout,initialize_timer,verbose)
+    sock = SocketConnect.SocketConnect(oidTimeout,initialize_timer)
+    sock.Send(message)
+    outputScan = sock.Receive(verbose)
     return(outputScan)
