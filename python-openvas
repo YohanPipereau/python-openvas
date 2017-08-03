@@ -53,18 +53,17 @@ parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, he
 
 args = parser.parse_args()
 
-if args.list_families:
-    familyDict = OTP.ListFamilies(args.oid_timeout,args.initialize_timer)
-    print(familyDict.keys())
-    sys.exit(0)
-
-elif args.target: #Before Giving the ip to the scanner, test if it is a correct ip.
+familyDict = OTP.ListFamilies(args.oid_timeout,args.initialize_timer) #retrieve families anyway
+if args.target: #Before Giving the ip to the scanner, test if it is a correct ip.
     isIp = IPTool.IPTool(args.target[0])
     ipTarget = isIp.ValidDNIP()
 
+elif args.list_families:
+    print(familyDict.keys())
+    sys.exit(0)
+
 if args.target and ( args.family or args.all): #Check that we have at least an ip and a family to run the scan
     print(Color.BLUE + "Don't forget to deactivate the target firewall !" + Color.END)
-    familyDict = OTP.ListFamilies(args.oid_timeout,args.initialize_timer)
     oidList = OTP.FamilyToScan(args.all,args.family,familyDict)
     outputScan = OTP.RunScan(args.scan_timeout,ipTarget,args.verbose,oidList,args.initialize_timer)
     scanReport = ParseScan.ParseScan(outputScan,ipTarget,familyDict) #Parsing the Scan Section

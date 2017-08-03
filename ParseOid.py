@@ -41,15 +41,14 @@ class ParseOid():
     def ParserLine(self,line):
         oidList=line.split(" <|> ")
         if len(oidList) == 10 :
-            familyFound = False #boolean equals False as long as we did not add the oidLine family to the array
-            k=0
-            while k<len(self.familyDict.keys()) and familyFound == False: #is the oid family in the family dict?
-                if oidList[4] == self.familyDict.keys()[k]:#The family of this oid is already in the array
-                    self.familyDict[self.familyDict.keys()[k]].update( {oidList[0] : {"name" : oidList[1] , "description" : oidList[9]}})
-                    familyFound = True
-                k+=1
-            if familyFound == False:#If we did not find the family then we need to append the family to the dict
-                self.familyDict.update({oidList[4] : {oidList[0] : { "name" : oidList[1], "description" : oidList[9]}}})
+            oidNumber = oidList[0]
+            oidName = oidList[1]
+            oidFamily = oidList[4]
+            oidDescription = oidList[9]
+            if oidFamily in self.familyDict.keys():# oid family already in dict
+                    self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription}})
+            else: #oid family appended to dict
+                self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription}}})
         else:
             print("Error! oidList has a size different of 10 characters.")
             sys.exit(2)
