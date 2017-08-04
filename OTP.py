@@ -6,9 +6,8 @@ class OTP:
 	This module handles OTP communication with the scanner.
     """
 
-    def __init__(self, oidTimeout, scanTimeout,initialize_timer):
-	self.initialize_timer = initialize_timer
-        self.sock = SocketConnect.SocketConnect(initialize_timer)
+    def __init__(self, oidTimeout, scanTimeout):
+        self.sock = SocketConnect.SocketConnect()
 	self.oidTimeout = oidTimeout
 	self.scanTimeout = scanTimeout
         

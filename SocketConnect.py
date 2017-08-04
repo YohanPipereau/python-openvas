@@ -6,8 +6,7 @@ import os, socket, time, sys, select
 
 class SocketConnect:
 
-    def __init__(self, initialize_timer, unixsocket_path = '/var/run/openvassd.sock'):
-        self.initialize_timer = initialize_timer
+    def __init__(self, unixsocket_path = '/var/run/openvassd.sock'):
         self.unixsocket_path = unixsocket_path
 	try:
              os.path.isfile(unixsocket_path) #Check the existence of the socket
