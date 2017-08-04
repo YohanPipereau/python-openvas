@@ -6,8 +6,7 @@ import os, socket, time, sys, select
 
 class SocketConnect:
 
-    def __init__(self, oidTimeout, initialize_timer, unixsocket_path = '/var/run/openvassd.sock'):
-        self.oidTimeout = oidTimeout
+    def __init__(self, initialize_timer, unixsocket_path = '/var/run/openvassd.sock'):
         self.initialize_timer = initialize_timer
         self.unixsocket_path = unixsocket_path
 	try:
@@ -21,14 +20,15 @@ class SocketConnect:
 
     def Send(self,message):
         for line in message:
-            if line == "< OTP/2.0 >":
+	    print(line)
+            if line == "< OTP/2.0 >\n":
                 self.sock.send(line)
-                time.sleep(initialize_timer)
+                time.sleep(self.initialize_timer)
             else:
-                    self.sock.send(line)
-                    time.sleep(0.01)
+                self.sock.send(line)
+                #time.sleep(0.01)
 
-    def Receive(self, verbose=False):
+    def Receive(self,timeout, verbose=False):
         outputVar=""
         if verbose == True:
             print_verbose = lambda x: sys.stdout.write(x)
@@ -36,7 +36,7 @@ class SocketConnect:
             print_verbose = lambda x: None
         while True:
 	    try:
-		self.sock.settimeout(self.oidTimeout)
+		self.sock.settimeout(timeout)
 		data = self.sock.recv(1024)
 		self.sock.settimeout(None)
 		outputVar += data
@@ -44,8 +44,9 @@ class SocketConnect:
 		    return(outputVar)
 		print_verbose(data)
 	    except socket.timeout:
-		#print("timeout")
+		print("timeout")
+		self.sock.settimeout(None)
 		return(outputVar)
 
     def Close(self):
-        pass #todo
+        self.sock.close()
