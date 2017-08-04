@@ -21,31 +21,13 @@ class SocketConnect:
     def Send(self,message):
         totalsent = 0
         while totalsent < len(message):
-            sent = self.sock.send(msg[totalsent:])
+            sent = self.sock.send(message[totalsent:])
             if sent == 0:
                 raise RuntimeError("socket connection broken")
             totalsent = totalsent + sent
 
-        '''for line in message:
-	    print(line)
-            if line == "< OTP/2.0 >\n":
-                self.sock.send(line)
-                time.sleep(self.initialize_timer)
-            else:
-                self.sock.send(line)
-                #time.sleep(0.01)'''
-
     def Receive(self,timeout, verbose=False):
-        chunks = []
-        bytes_recd = 0
-        while bytes_recd < 2048:
-            chunk = self.sock.recv(min(2048 - bytes_recd, 2048))
-            if chunk == b'':
-                raise RuntimeError("socket connection broken")
-            chunks.append(chunk)
-            bytes_recd = bytes_recd + len(chunk)
-        return b''.join(chunks)
-        '''outputVar=""
+        outputVar=""
         if verbose == True:
             print_verbose = lambda x: sys.stdout.write(x)
         else:
@@ -62,7 +44,7 @@ class SocketConnect:
 	    except socket.timeout:
 		print("timeout")
 		self.sock.settimeout(None)
-		return(outputVar)'''
-
+		return(outputVar)
+    
     def Close(self):
         self.sock.close()

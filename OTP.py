@@ -1,4 +1,4 @@
-import SocketConnect, ParseOid
+import SocketConnect, ParseOid, time
 import Color
 
 class OTP:
@@ -18,9 +18,12 @@ class OTP:
 	    It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
 	"""
 	print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
-	message= ['< OTP/2.0 >\n','CLIENT <|> NVT_INFO <|> CLIENT\n','CLIENT <|> COMPLETE_LIST <|> CLIENT\n']
+	message= '< OTP/2.0 >\nCLIENT <|> NVT_INFO <|> CLIENT\nCLIENT <|> COMPLETE_LIST <|> CLIENT\n'
 	self.sock.Send(message)
-	outputVar = self.sock.Receive(self.oidTimeout) 
+	time.sleep(2)
+	outputVar = self.sock.Receive(self.oidTimeout) #Receive oid
+	self.sock.Send("\n") #Need to add this to retrieve the config as well 
+	self.sock.Receive(self.oidTimeout) #Receive config
 	oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
 	oid.Parser(outputVar)
 	return(oid.familyDict)
@@ -47,8 +50,8 @@ class OTP:
 	print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
 	oidString = ';'.join(oidList)
 	with open('conf/scan.conf') as f:
-	    confFile = f.read().splitlines(True)#Read the content of the configuration file and let the CR !! important
-	message = ['CLIENT <|> PREFERENCES <|>\n','plugin_set <|>' + oidString + "\n"] + confFile +  [str(len(ipScan)) + "\n", ipScan +"\n"]
+	    confFile = f.read() #Read the content of the configuration file and let the CR !! important
+	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(ipScan)) + "\n" + ipScan +"\n"
 	self.sock.Send(message)
 	outputScan = self.sock.Receive(self.scanTimeout,verbose)
 	return(outputScan)
