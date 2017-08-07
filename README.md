@@ -40,6 +40,11 @@ This python code aims at interacting directly with openvassd, also named openvas
 
 # Required configuration:
 
+*Dependancies:
+-openvas-scanner
+-python
+-python-progressbar
+
 * openvas-handler only works with OTP scanners
 * openvas-scanner version required is >= 5.1.0 which implements unix socket (otherwise change the code to talk to TCP socket)
 * Add/Change the following line to your /etc/openvas/openvassd.conf: kb_location = /var/run/redis/redis.sock
