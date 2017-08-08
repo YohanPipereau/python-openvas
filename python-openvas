@@ -33,7 +33,7 @@
 
 
 import sys, signal, re, socket, argparse #General module
-import Email, ParseScan, IPTool, OTP, Color #Personnal class
+import Email, SendFormat, ParseScan, IPTool, OTP, Color #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
@@ -71,16 +71,13 @@ if args.target and ( args.family or args.all): #Check that we have at least an i
     oidList = otp.FamilyToScan(args.all,args.family,familyDict)
     outputScan = otp.RunScan(ipTarget,args.verbose,oidList)
     otp.sock.Close()
-    scanReport = ParseScan.ParseScan(outputScan,ipTarget,familyDict) #Parsing the Scan Section
     if args.json: #user asked for json sent to flume
-        scanReport.ParserJSON(args.flume_server)
+	sendFormatObj = SendFormat.SendFormat(outputScan,args.target,familyDict)
+	sendFormatObj.SendFlume(args.flume_server)
     if args.email: #If the list of destination email has been given, then...
-        reportAfterParsing = scanReport.ParserEmail()
-        if reportAfterParsing.strip():
-            s = Email.Email(reportAfterParsing,args.email,args.email_from,args.email_subject)
-            s.sendEmail()
-        else:
-            print(Color.GREEN + "No Vulnerability detected, then no email sent!" + Color.END)
-            sys.exit(0)
+	sendFormatObj = SendFormat.SendFormat(outputScan,args.target,familyDict)
+	sendFormatObj.SetHeaders(args.email_subject,args.email_from,args.email)
+        sendFormatObj.SendEmail(args.email_from,args.email)
+        sys.exit(0)
 else:
     print(Color.RED + "Arguments missing !" + Color.END)

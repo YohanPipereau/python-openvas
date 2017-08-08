@@ -1,4 +1,4 @@
-import time,json,collections,requests, socket
+import time,json,collections, socket
 import Color
 
 class ParseScan:
@@ -25,23 +25,7 @@ class ParseScan:
                     return k
         return None
 
-    def ParserEmail(self):
-        print(Color.GREEN + "Parsing Scan to create report ..." + Color.END)
-        scanList=self.outputScan.split("SERVER <|>")
-        for motiv in scanList:
-            if "ALARM <|>" in motiv: #ALARM Flag detected
-                motivParsed = motiv.split("<|> ")
-                oidNumber = motivParsed[4].strip()
-                if oidNumber in self.blacklist:
-                    print(oidNumber + "blacklisted, then not included in report")
-                else:
-                    familyOfOid = self.search(oidNumber)  #We need to find the family of the oid
-                    nameOfOid = self.familyDict[familyOfOid][oidNumber]["name"]
-                    self.report += "\n***** VULNERABILITY : " + motivParsed[4] + nameOfOid + ":\n"
-                    self.report += motivParsed[3]
-        return(self.report)
-
-    def ParserJSON(self, flumeServer):
+    def ParserJSON(self):
         """
             ParserJson est le Parser qui renvoie le Json contenant
             les logs du scan.
@@ -72,6 +56,7 @@ class ParseScan:
 "plugin" : {
         "name" : self.familyDict[familyOfOid][oidNumber]["name"],
         "description" : self.familyDict[familyOfOid][oidNumber]["description"],
+	"family" : familyOfOid,
         "oid" : oidNumber,
         "message" : str(motivParsed[3]),
         "type": "LOG" if "LOG <|>" in motiv else "ALARM"
@@ -80,6 +65,4 @@ class ParseScan:
                 bodyJson = json.dumps(bodyDict)
                 jsonDict[len(jsonDict)-1]["body"] = bodyJson
         self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json
-        print(self.jsonOutput)
-        requests.post(flumeServer, json={"key": "value"})
-        print(Color.GREEN + "JSON Sent!" + Color.END)
+        return self.jsonOutput

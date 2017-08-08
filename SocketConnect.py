@@ -41,7 +41,6 @@ class SocketConnect:
 		    return(outputVar)
 		print_verbose(data)
 	    except socket.timeout:
-		print("timeout")
 		self.sock.settimeout(None)
 		return(outputVar)
     
