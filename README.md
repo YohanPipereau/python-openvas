@@ -54,8 +54,9 @@ unixsocketperm 700
 port 0
 timeout 0
 
-
 # Use the OTP Shell
+
+Open connection with the socket: nc -U /var/run/openvassd.sock
 
 * to keep the connection to the socket opened you need to write
 < OTP/2.0 >
@@ -100,6 +101,11 @@ or just read opevas-scanner source code: https://wald.intevation.org/scm/viewvc.
 * openvas-scanner hangs after reboot and when you strace it seems the error comes after the connection with the redis.sock:
 -Try to empty the redis database: redis-cli -s /var/run/redis/redis.sock flushall
 -Check the database is indeed clear: redis-cli -s /var/run/redis/redis.sock dbsize
+openvassd stores data in redis database 1 (SELECT 1), thus, oid can be retrieved by doing ("KEYS" "oid:*:name")
+
+*python-openvas report socket.error Broken pipe.
+Restart openvas-scanner.
+
 
 * openvas-scanner fails to start:
 -Check in /var/run/ if you have a openvassd.pid file, it is due to openvas-scanner launched without systemd

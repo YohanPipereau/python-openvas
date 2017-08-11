@@ -31,6 +31,8 @@
 
 """
 
+VERSION = '1.0'
+
 
 import sys, signal, re, socket, argparse #General module
 import Email, SendFormat, ParseScan, IPTool, OTP, Color #Personnal class
@@ -47,7 +49,7 @@ parser.add_argument('-e', '--email', metavar="x1@example.com, x2@example.com", t
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--scan-timeout', type=int, nargs=1, help="Set a timeout for the scan depending if the firewall is up or down. Default is 300s.", dest="scan_timeout",default=300)
-parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
 parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help="Define the sender of the email report", dest="email_from", default="openvas@cern.ch")
 parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, help="Define the subject of the email. Default is Openvas Report", dest="email_subject", default="Openvas Report")
 
@@ -55,17 +57,16 @@ args = parser.parse_args()
 
 otp = OTP.OTP(args.oid_timeout,args.scan_timeout)
 
-if args.target: #Before Giving the ip to the scanner, test if it is a correct ip.
-    isIp = IPTool.IPTool(args.target[0])
-    ipTarget = isIp.ValidDNIP()
-
-elif args.list_families:
+if args.list_families:
     familyDict = otp.ListFamilies() #retrieve families anyway
     print(familyDict.keys())
     otp.sock.Close()
     sys.exit(0)
 
-if args.target and ( args.family or args.all): #Check that we have at least an ip and a family to run the scan
+elif args.target: #Check that we have at least an ip and a family to run the scan
+    #Before Giving the ip to the scanner, test if it is a correct ip.
+    isIp = IPTool.IPTool(args.target[0])
+    ipTarget = isIp.ValidDNIP()
     print(Color.BLUE + "Don't forget to deactivate the target firewall !" + Color.END)
     familyDict = otp.ListFamilies() #retrieve families anyway
     oidList = otp.FamilyToScan(args.all,args.family,familyDict)

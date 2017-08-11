@@ -1,5 +1,5 @@
 import requests, json, smtplib
-import Color, ParseScan, Email
+import Color, ParseScan, Email, datetime
 from email.mime.text import MIMEText
 
 class SendFormat:
@@ -12,17 +12,19 @@ class SendFormat:
 	"""
 	    Build the Report sent by Email with only ALARMs
 	"""
-        report=""
+        report="Scanned on " + str(datetime.datetime.now())
 	tmpDict = json.loads(self.jsonOutput)
 	for k in range(len(tmpDict)-1):
 	    bodyDict = json.loads(tmpDict[k]['body'])
-	    print(bodyDict)
 	    if bodyDict['plugin']['type'] == 'ALARM':
 		oidNumber = bodyDict['plugin']['oid']
 		nameOfOid = bodyDict['plugin']['name']
 		familyOfOid = bodyDict['plugin']['family']
+                CVEOfOid = bodyDict['plugin']['CVE']
+                BIDOfOid = bodyDict['plugin']['BID']
+                URLOfOid = bodyDict['plugin']['URL']
 		message = bodyDict['plugin']['message']
-		report += "\n***** VULNERABILITY :" + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + "\n" + message
+		report += "\n***** VULNERABILITY :" + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n-URL:' + URLOfOid + "\n" + message
         return(report)
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):
@@ -48,3 +50,6 @@ class SendFormat:
 	"""
         requests.post(flumeServer, json=self.jsonOutput)
         print(Color.GREEN + "JSON Sent!" + Color.END)
+
+    def SendFile(self):
+        pass

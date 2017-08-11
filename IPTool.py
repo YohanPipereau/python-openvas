@@ -11,14 +11,15 @@ class IPTool:
 
     def ValidDN(self):
         """
-            Check if a domain name is well solved 
+            Check if a domain name is well solved.
+            Entry of the type 0.0 are automatically conpleted to 0.0.0.0.
         """
         self.address = socket.gethostbyname(self.address)
 	self.ValidIP() #is the IP received a good IP
 
     def ValidIP(self):
         """
-            check if an ip is valid or not
+            Check if an ip is valid or not.
         """
         try: #try IPv6
             b1 = socket.inet_pton(socket.AF_INET6,self.address)

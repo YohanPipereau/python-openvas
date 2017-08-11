@@ -2,7 +2,7 @@
     This file contains the Socket tool function to interact with the scanner socket.
 """
 
-import os, socket, time, sys, select
+import os, socket, time, sys
 
 class SocketConnect:
 
@@ -12,12 +12,15 @@ class SocketConnect:
              os.path.isfile(unixsocket_path) #Check the existence of the socket
         except OSError:
             print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
-       ##Instantiate the socket and connect the client to it (the server is openvas-scanner)
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(unixsocket_path)
 
 
     def Send(self,message):
+	"""
+	    Send function inspired by official doc.
+	    Suited for cases where we don't know the server buffer size.
+        """
         totalsent = 0
         while totalsent < len(message):
             sent = self.sock.send(message[totalsent:])
@@ -26,6 +29,9 @@ class SocketConnect:
             totalsent = totalsent + sent
 
     def Receive(self,timeout, verbose=False):
+	"""
+	    Receive function using timeout because of unknown socket buffer size.
+	"""
         outputVar=""
         if verbose == True:
             print_verbose = lambda x: sys.stdout.write(x)

@@ -1,4 +1,5 @@
 import sys
+from collections import namedtuple
 
 class ParseOid():
     """
@@ -20,7 +21,7 @@ class ParseOid():
 
         Format of the NVT_INFO output of the scanner:
         ---------------------------------------------
-        oid <|> Name of NVT <|> infos <|> Licence of vulnerability <|> Family <|>
+        oid <|> Name of NVT <|> 'infos' <|> Licence of vulnerability <|> Family <|>
         ID of revision <|> CVE id <|> BID (bugtrack id) <|> URL <|> Description \n
     """
 
@@ -41,14 +42,12 @@ class ParseOid():
     def ParserLine(self,line):
         oidList=line.split(" <|> ")
         if len(oidList) == 10 :
-            oidNumber = oidList[0]
-            oidName = oidList[1]
-            oidFamily = oidList[4]
-            oidDescription = oidList[9]
-            if oidFamily in self.familyDict.keys():# oid family already in dict
-                    self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription}})
+	    RenameOidList = namedtuple('oidListUseful' , ['oidNumber', 'oidName', 'oidFamily', 'oidCVE', 'oidBID', 'oidURL', 'oidDescription'])
+	    a = RenameOidList._make([oidList[0], oidList[1], oidList[4], oidList[6], oidList[7], oidList[8], oidList[9]])
+            if a.oidFamily in self.familyDict.keys():# oid family already in dict
+                    self.familyDict[a.oidFamily].update( {a.oidNumber : {"name" : a.oidName , "description" : a.oidDescription , "CVE" : a.oidCVE , "BID" : a.oidBID, "URL" : a.oidURL}})
             else: #oid family appended to dict
-                self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription}}})
+                self.familyDict.update({ a.oidFamily : {a.oidNumber : { "name" : a.oidName, "description" : a.oidDescription, "CVE" : a.oidCVE , "BID" : a.oidBID , "URL" : a.oidURL}}})
         else:
             print("Error! oidList has a size different of 10 characters.")
             sys.exit(2)
