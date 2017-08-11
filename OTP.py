@@ -25,7 +25,6 @@ class OTP:
 	self.sock.Receive(self.oidTimeout) #Receive config
 	oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
 	oid.Parser(outputVar)
-	print(oid.familyDict)
 	return(oid.familyDict)
 
     def FamilyToScan(self,scanAll, familyScan, familyDict):
