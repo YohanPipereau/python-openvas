@@ -41,7 +41,7 @@ class ParseScan:
 	"""
 	    Create Body Dictionnary inserted in templateDict['body'] as JSON.
 	"""
-	oidNumber = motivParsed[4].strip()
+	oidNumber = self.motivParsed[4].strip()
 	familyOfOid = self.searchFamily(oidNumber)
 	bodyDict = {
 "target" : self.target ,
@@ -53,8 +53,8 @@ class ParseScan:
         "CVE" : self.familyDict[familyOfOid][oidNumber]["CVE"],
         "BID" : self.familyDict[familyOfOid][oidNumber]['BID'],
         "URL" : self.familyDict[familyOfOid][oidNumber]["URL"],
-        "message" : str(motivParsed[3]),
-        "type": "LOG" if "LOG <|>" in motiv else "ALARM"
+        "message" : str(self.motivParsed[3]),
+        "type": "LOG" if "LOG <|>" in self.motiv else "ALARM"
 	}
 }
 	return bodyDict
@@ -64,23 +64,16 @@ class ParseScan:
             ParserJson est le Parser qui renvoie le Json contenant
             les logs du scan.
             Afin de correspondre au JsonHandler de Flume, voici sa forme
-            [{
-            'headers' : {
-                        'timestamp' : timestamp,
-                        'host' : host
-                        },
-	    'body' : bodyJson
-            }]
         """
         print(Color.GREEN + "Parsing Scan to create report ...") + Color.END
         jsonDict = [] #jsonDict is an array containing the Json Dictionnary
         scanList = self.outputScan.split("SERVER <|>")
-        for motiv in scanList:
-	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
+        for self.motiv in scanList:
+	    if "LOG <|>" in self.motiv or "ALARM <|>" in self.motiv:
 		templateDict = self.createTemplate()
-		motivParsed = motiv.split("<|> ")
+		self.motivParsed = self.motiv.split("<|> ")
 		jsonDict.append(templateDict.copy())
-		self.createBody()
+		bodyDict = self.createBody()
 		bodyJson = json.dumps(bodyDict)
                 jsonDict[len(jsonDict)-1]["body"] = bodyJson
 	#self.jsonOutput & jsonDict does not have ALARM

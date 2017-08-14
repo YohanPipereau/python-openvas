@@ -21,6 +21,7 @@ class SocketConnect:
 	    Send function inspired by official doc.
 	    Suited for cases where we don't know the server buffer size.
         """
+	print(message)
         totalsent = 0
         while totalsent < len(message):
             sent = self.sock.send(message[totalsent:])
@@ -45,7 +46,8 @@ class SocketConnect:
 		outputVar += data
 		if "<|> BYE" in data:
 		    return(outputVar)
-		print_verbose(data)
+		#print_verbose(data)
+	  	print(data)
 	    except socket.timeout:
 		self.sock.settimeout(None)
 		return(outputVar)

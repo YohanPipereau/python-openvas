@@ -102,6 +102,7 @@ or just read opevas-scanner source code: https://wald.intevation.org/scm/viewvc.
 -Try to empty the redis database: redis-cli -s /var/run/redis/redis.sock flushall
 -Check the database is indeed clear: redis-cli -s /var/run/redis/redis.sock dbsize
 openvassd stores data in redis database 1 (SELECT 1), thus, oid can be retrieved by doing ("KEYS" "oid:*:name")
+then SMEMBERS 'oid:<oid>:name' to get the path to the plugin in /var/lib/openvas/plugins
 
 *python-openvas report socket.error Broken pipe.
 Restart openvas-scanner.
