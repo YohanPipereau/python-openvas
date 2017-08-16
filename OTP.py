@@ -18,6 +18,7 @@ class OTP:
 	"""
 	print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
 	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\nCLIENT <|> COMPLETE_LIST <|> CLIENT\n')
+	self.sock.Receive()
 	rawOid = self.sock.Receive(verbose=False)
 	self.sock.Send("\n") #Need to add this to retrieve the config as well 
 	self.sock.Receive() #Receive config

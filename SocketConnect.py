@@ -12,18 +12,18 @@ class SocketConnect:
              os.path.isfile(unixsocket_path) #Check the existence of the socket
         except OSError:
             print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
-	self.acc = ''
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(unixsocket_path)
 	self.sock.send('< OTP/2.0 >\n')
-	first = self.sock.recv(1024)
+	checkprotocol = self.sock.recv(1024)
+	if checkprotocol !=  '< OTP/2.0 >\n':
+	    raise Exception('OTP 2.0 protocol required for this wrapper !')
 
     def Send(self,message):
 	"""
 	    Send function inspired by official doc.
 	    Suited for cases where we don't know the server buffer size.
         """
-	print(message)
         totalsent = 0
         while totalsent < len(message):
             sent = self.sock.send(message[totalsent:])
@@ -35,17 +35,16 @@ class SocketConnect:
 	"""
 	    Receive function using timeout because of unknown socket buffer size.
 	"""
+	acc = ''
 	last, cur = '', ''
-	if not '<|> SERVER' in self.acc:
+	if not '<|> SERVER' in acc:
 	    while not '<|> SERVER' in last + cur:
 		last, cur = cur, self.sock.recv(4096)
-		self.acc += cur
-		print(len(self.acc))
+		acc += cur
 		#if '<|> BYE' in last + cur:
 		#    self.stop = True
-	(useNow, remain) = self.acc.split('<|> SERVER',1)
-	self.acc = remain
-	return useNow 
+	(useNow, self.remain) = acc.split('<|> SERVER',1)
+	return useNow.lstrip('SERVER <|>')
 
     def Close(self):
         self.sock.close()
