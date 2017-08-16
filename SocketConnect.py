@@ -14,7 +14,7 @@ class SocketConnect:
             print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(unixsocket_path)
-
+	self.sock.send('< OTP/2.0 >\n')
 
     def Send(self,message):
 	"""
@@ -29,10 +29,23 @@ class SocketConnect:
                 raise RuntimeError("socket connection broken")
             totalsent = totalsent + sent
 
-    def Receive(self,timeout, verbose=False):
+    def Receive(self,verbose=False):
 	"""
 	    Receive function using timeout because of unknown socket buffer size.
 	"""
+	last, cur = '', ''
+	if not '<|> SERVER' in acc:
+	    while not '<|> SERVER' in last + cur:
+		acc += cur
+		last, cur = cur, self.sock.recv(1024)
+		if '<|> BYE' in last + cur:
+		    self.stop = True
+	(useNow, remain) = acc.split('<|> SERVER',1)
+	acc = remain
+	return useNow 
+
+# add the verbose function in OTP class
+"""
         outputVar=""
         if verbose == True:
             print_verbose = lambda x: sys.stdout.write(x)
@@ -51,6 +64,7 @@ class SocketConnect:
 	    except socket.timeout:
 		self.sock.settimeout(None)
 		return(outputVar)
-    
+"""
+ 
     def Close(self):
         self.sock.close()
