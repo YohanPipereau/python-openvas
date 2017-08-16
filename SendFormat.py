@@ -4,9 +4,8 @@ from email.mime.text import MIMEText
 
 class SendFormat:
 
-    def __init__(self,outputScan, target, familyDict):
-	parseScanObj = ParseScan.ParseScan(outputScan,target,familyDict)
-	self.jsonOutput = parseScanObj.ParserJSON()
+    def __init__(self, jsonOutput):
+	self.jsonOutput = jsonOutput
 
     def BuildEmailReport(self):
 	"""

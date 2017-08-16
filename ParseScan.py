@@ -8,13 +8,13 @@ class ParseScan:
         email readable format and elasticsearch Json format
     """
 
-    def __init__(self,outputScan,target,familyDict):
-        self.outputScan = outputScan
+    def __init__(self,target,familyDict):
         self.target = target
         self.report = ""
         with open('conf/blacklist.conf', 'r') as blacklistFile:
             self.blacklist=blacklistFile.read().splitlines()
         self.familyDict = familyDict #required for  name & description of plugin oid
+        self.jsonDict = [] #jsonDict is an array containing the Json Dictionnary
 
     def searchFamily(self, oid):
         """
@@ -37,11 +37,12 @@ class ParseScan:
 }
 	return templateDict
 
-    def createBody(self):
+    def createBody(self,motiv):
 	"""
 	    Create Body Dictionnary inserted in templateDict['body'] as JSON.
 	"""
-	oidNumber = self.motivParsed[4].strip()
+	motivParsed = motiv.split("<|> ")
+	oidNumber = motivParsed[4].strip()
 	familyOfOid = self.searchFamily(oidNumber)
 	bodyDict = {
 "target" : self.target ,
@@ -53,29 +54,29 @@ class ParseScan:
         "CVE" : self.familyDict[familyOfOid][oidNumber]["CVE"],
         "BID" : self.familyDict[familyOfOid][oidNumber]['BID'],
         "URL" : self.familyDict[familyOfOid][oidNumber]["URL"],
-        "message" : str(self.motivParsed[3]),
-        "type": "LOG" if "LOG <|>" in self.motiv else "ALARM"
+        "message" : str(motivParsed[3]),
+        "type": "LOG" if "LOG <|>" in motiv else "ALARM"
 	}
 }
 	return bodyDict
 
-    def ParserJSON(self):
+    def AddLine(self,outputScanLine):
         """
             ParserJson est le Parser qui renvoie le Json contenant
             les logs du scan.
             Afin de correspondre au JsonHandler de Flume, voici sa forme
         """
-        print(Color.GREEN + "Parsing Scan to create report ...") + Color.END
-        jsonDict = [] #jsonDict is an array containing the Json Dictionnary
-        scanList = self.outputScan.split("SERVER <|>")
-        for self.motiv in scanList:
-	    if "LOG <|>" in self.motiv or "ALARM <|>" in self.motiv:
+        scanList = outputScanLine.split("SERVER <|>")
+        for motiv in scanList:
+	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
 		templateDict = self.createTemplate()
-		self.motivParsed = self.motiv.split("<|> ")
-		jsonDict.append(templateDict.copy())
-		bodyDict = self.createBody()
+		self.jsonDict.append(templateDict.copy())
+		bodyDict = self.createBody(motiv)
 		bodyJson = json.dumps(bodyDict)
-                jsonDict[len(jsonDict)-1]["body"] = bodyJson
-	#self.jsonOutput & jsonDict does not have ALARM
-        self.jsonOutput = json.dumps(jsonDict) #convert the array dictionnary to Json
-        return self.jsonOutput
+                self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
+        return 0
+
+    def FinalOutput(self):
+	jsonOutput = json.dumps(self.jsonDict)	
+	return jsonOutput
+

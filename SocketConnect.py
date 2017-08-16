@@ -2,7 +2,7 @@
     This file contains the Socket tool function to interact with the scanner socket.
 """
 
-import os, socket, time, sys
+import os, socket
 
 class SocketConnect:
 
@@ -18,6 +18,7 @@ class SocketConnect:
 	checkprotocol = self.sock.recv(1024)
 	if checkprotocol !=  '< OTP/2.0 >\n':
 	    raise Exception('OTP 2.0 protocol required for this wrapper !')
+	self.stop = False
 
     def Send(self,message):
 	"""
@@ -43,32 +44,8 @@ class SocketConnect:
 		acc += cur
 	(useNow, self.remain) = acc.split('<|> SERVER',1)
 	if '<|> BYE' in cur:
-	    print('Bye')
 	    self.stop = True
 	return useNow.lstrip('SERVER <|>')
 
     def Close(self):
         self.sock.close()
-
-# add the verbose function in OTP class
-"""
-        outputVar=""
-        if verbose == True:
-            print_verbose = lambda x: sys.stdout.write(x)
-        else:
-            print_verbose = lambda x: None
-        while True:
-	    try:
-		self.sock.settimeout(timeout)
-		data = self.sock.recv(1024)
-		self.sock.settimeout(None)
-		outputVar += data
-		if "<|> BYE" in data:
-		    return(outputVar)
-		#print_verbose(data)
-	  	print(data)
-	    except socket.timeout:
-		self.sock.settimeout(None)
-		return(outputVar)
-"""
- 

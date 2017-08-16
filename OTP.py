@@ -1,5 +1,6 @@
-import SocketConnect, ParseOid, ParseScan
-import Color
+import sys
+import SocketConnect, ParseOid, ParseScan, Color
+
 
 class OTP:
     """
@@ -38,20 +39,26 @@ class OTP:
 	oidList = [ x for i in oidListFamily for x in i ]
 	return(oidList)
 
-    def RunScan(self,ipScan,verbose,oidList):
+    def RunScan(self,target,verbose,oidList,familyDict):
 	"""
 	    Called from the main file.
 	    It runs the scan by talking to the unixsocket of the scanner, then
 	    it outputs a file containing all the information of the scanner scan.
 	"""
+	if verbose:
+	    print_verbose = lambda x: sys.stdout.write(x)
+	else:
+	    print_verbose = lambda x: None
 	print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
 	oidString = ';'.join(oidList)
 	with open('conf/scan.conf') as f:
 	    confFile = f.read() #Read the content of the configuration file and let the CR !! important
-	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(ipScan)) + "\n" + ipScan +"\n"
+	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
 	self.sock.Send(message)
-	parseScanObj = ParseScan.ParseScan()
+	buildJson = ParseScan.ParseScan(target, familyDict)
 	while not self.sock.stop:
-	    outputScan = self.sock.Receive(verbose)
-	    parseScanObj.ParserJSON(outputScan)
-	return(outputScan)
+	    outputScanLine = self.sock.Receive(verbose)
+	    #print_verbose(outputScanLine)
+	    buildJson.AddLine(outputScanLine)
+	jsonOutput = buildJson.FinalOutput()
+	return(jsonOutput)
