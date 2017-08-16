@@ -17,13 +17,12 @@ class OTP:
 	    It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
 	"""
 	print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
-	message = '< OTP/2.0 >\nCLIENT <|> NVT_INFO <|> CLIENT\nCLIENT <|> COMPLETE_LIST <|> CLIENT\n'
-	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\n')
-	self.sock.Receive(verbose=False)
+	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\nCLIENT <|> COMPLETE_LIST <|> CLIENT\n')
+	rawOid = self.sock.Receive(verbose=False)
 	self.sock.Send("\n") #Need to add this to retrieve the config as well 
 	self.sock.Receive() #Receive config
-	oid = ParseOid.ParseOid(verbose=False) #Let's parse the answer of the scanner
-	oid.Parser(outputVar)
+	oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
+	oid.Parser(rawOid)
 	return(oid.familyDict)
 
     def FamilyToScan(self,scanAll, familyScan, familyDict):

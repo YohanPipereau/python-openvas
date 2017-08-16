@@ -12,9 +12,11 @@ class SocketConnect:
              os.path.isfile(unixsocket_path) #Check the existence of the socket
         except OSError:
             print(" This unixsocket does not exist ... default is /var/run/openvassd.sock ")
+	self.acc = ''
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.connect(unixsocket_path)
 	self.sock.send('< OTP/2.0 >\n')
+	first = self.sock.recv(1024)
 
     def Send(self,message):
 	"""
@@ -34,15 +36,19 @@ class SocketConnect:
 	    Receive function using timeout because of unknown socket buffer size.
 	"""
 	last, cur = '', ''
-	if not '<|> SERVER' in acc:
+	if not '<|> SERVER' in self.acc:
 	    while not '<|> SERVER' in last + cur:
-		acc += cur
-		last, cur = cur, self.sock.recv(1024)
-		if '<|> BYE' in last + cur:
-		    self.stop = True
-	(useNow, remain) = acc.split('<|> SERVER',1)
-	acc = remain
+		last, cur = cur, self.sock.recv(4096)
+		self.acc += cur
+		print(len(self.acc))
+		#if '<|> BYE' in last + cur:
+		#    self.stop = True
+	(useNow, remain) = self.acc.split('<|> SERVER',1)
+	self.acc = remain
 	return useNow 
+
+    def Close(self):
+        self.sock.close()
 
 # add the verbose function in OTP class
 """
@@ -66,5 +72,3 @@ class SocketConnect:
 		return(outputVar)
 """
  
-    def Close(self):
-        self.sock.close()
