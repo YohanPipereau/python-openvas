@@ -41,9 +41,10 @@ class SocketConnect:
 	    while not '<|> SERVER' in last + cur:
 		last, cur = cur, self.sock.recv(4096)
 		acc += cur
-		#if '<|> BYE' in last + cur:
-		#    self.stop = True
 	(useNow, self.remain) = acc.split('<|> SERVER',1)
+	if '<|> BYE' in cur:
+	    print('Bye')
+	    self.stop = True
 	return useNow.lstrip('SERVER <|>')
 
     def Close(self):

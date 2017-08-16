@@ -1,4 +1,4 @@
-import SocketConnect, ParseOid
+import SocketConnect, ParseOid, ParseScan
 import Color
 
 class OTP:
@@ -6,10 +6,9 @@ class OTP:
 	This module handles OTP communication with the scanner.
     """
 
-    def __init__(self, oidTimeout, scanTimeout):
+    def __init__(self, oidTimeout):
         self.sock = SocketConnect.SocketConnect()
 	self.oidTimeout = oidTimeout
-	self.scanTimeout = scanTimeout
         
     def ListFamilies(self):
 	"""
@@ -51,5 +50,8 @@ class OTP:
 	    confFile = f.read() #Read the content of the configuration file and let the CR !! important
 	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(ipScan)) + "\n" + ipScan +"\n"
 	self.sock.Send(message)
-	outputScan = self.sock.Receive(verbose)
+	parseScanObj = ParseScan.ParseScan()
+	while not self.sock.stop:
+	    outputScan = self.sock.Receive(verbose)
+	    parseScanObj.ParserJSON(outputScan)
 	return(outputScan)
