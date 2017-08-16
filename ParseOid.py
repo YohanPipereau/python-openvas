@@ -30,14 +30,11 @@ class ParseOid():
 
     def Parser(self,scanData):
         scanList = scanData.splitlines()
-        parsingTrigger = False
-        for line in scanList:
-            if line == "SERVER <|> PLUGIN_LIST <|>":
-                parsingTrigger = True
-            elif line == "<|> SERVER": #Detect end of the matching section
-                return 0
-            elif parsingTrigger == True: #Every object has a parser which is called if we detect a line which match parserMatch
-                self.ParserLine(line)
+        if scanList[0] != "PLUGIN_LIST <|>":
+	    raise Exception('PLUGIN_LIST expected before retrieving OID') 
+        else:
+	    for line in scanList[1:]:
+		self.ParserLine(line)
 
     def ParserLine(self,line):
         oidList=line.split(" <|> ")
@@ -60,7 +57,7 @@ class ParseOid():
             #else: #oid family appended to dict
             #    self.familyDict.update({ a.oidFamily : {a.oidNumber : { "name" : a.oidName, "description" : a.oidDescription, "CVE" : a.oidCVE , "BID" : a.oidBID , "URL" : a.oidURL}}})
         else:
-            print("Error! oidList has a size different of 10 characters.")
+            raise Exception("Error! oidList has a size different of 10 characters.")
             sys.exit(2)
 
 

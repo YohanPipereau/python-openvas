@@ -51,5 +51,5 @@ class OTP:
 	    confFile = f.read() #Read the content of the configuration file and let the CR !! important
 	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(ipScan)) + "\n" + ipScan +"\n"
 	self.sock.Send(message)
-	outputScan = self.sock.Receive(self.scanTimeout,verbose)
+	outputScan = self.sock.Receive(verbose)
 	return(outputScan)
