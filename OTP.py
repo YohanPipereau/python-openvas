@@ -1,7 +1,6 @@
 import sys
 import SocketConnect, ParseOid, ParseScan, Color
 
-
 class OTP:
     """
 	This module handles OTP communication with the scanner.
@@ -45,10 +44,6 @@ class OTP:
 	    It runs the scan by talking to the unixsocket of the scanner, then
 	    it outputs a file containing all the information of the scanner scan.
 	"""
-	if verbose:
-	    print_verbose = lambda x: sys.stdout.write(x)
-	else:
-	    print_verbose = lambda x: None
 	print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
 	oidString = ';'.join(oidList)
 	with open('conf/scan.conf') as f:
@@ -59,6 +54,7 @@ class OTP:
 	while not self.sock.stop:
 	    outputScanLine = self.sock.Receive(verbose)
 	    #print_verbose(outputScanLine)
+	    print(outputScanLine)
 	    buildJson.AddLine(outputScanLine)
 	jsonOutput = buildJson.FinalOutput()
 	return(jsonOutput)

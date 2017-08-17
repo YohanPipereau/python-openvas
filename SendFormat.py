@@ -23,7 +23,7 @@ class SendFormat:
                 BIDOfOid = bodyDict['plugin']['BID']
                 URLOfOid = bodyDict['plugin']['URL']
 		message = bodyDict['plugin']['message']
-		report += "\n***** VULNERABILITY :" + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n-URL:' + URLOfOid + "\n" + message
+		report += "\n***** VULNERABILITY :" + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
         return(report)
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):

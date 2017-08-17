@@ -1,5 +1,5 @@
 import time,json,collections, socket
-import Color
+import Color, ProgressBar
 
 class ParseScan:
 
@@ -74,6 +74,8 @@ class ParseScan:
 		bodyDict = self.createBody(motiv)
 		bodyJson = json.dumps(bodyDict)
                 self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
+	    elif 'STATUS <|>' in motiv:
+		ProgressBar.AddLine(motiv)
         return 0
 
     def FinalOutput(self):

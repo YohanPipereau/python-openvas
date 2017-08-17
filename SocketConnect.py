@@ -19,6 +19,7 @@ class SocketConnect:
 	if checkprotocol !=  '< OTP/2.0 >\n':
 	    raise Exception('OTP 2.0 protocol required for this wrapper !')
 	self.stop = False
+	self.remain = ''
 
     def Send(self,message):
 	"""
@@ -40,12 +41,13 @@ class SocketConnect:
 	last, cur = '', ''
 	if not '<|> SERVER' in acc:
 	    while not '<|> SERVER' in last + cur:
-		last, cur = cur, self.sock.recv(4096)
-		acc += cur
+		last, cur = cur, self.sock.recv(1024)
+		acc += self.remain.strip() + cur
+		#acc += cur
 	(useNow, self.remain) = acc.split('<|> SERVER',1)
 	if '<|> BYE' in cur:
 	    self.stop = True
-	return useNow.lstrip('SERVER <|>')
+	return useNow[len('SERVER <|> '):] #remove leading 'SERVER <|>'
 
     def Close(self):
         self.sock.close()

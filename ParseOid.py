@@ -30,7 +30,7 @@ class ParseOid():
 
     def Parser(self,scanData):
         scanList = scanData.splitlines()
-        if scanList[0] != "PLUGIN_LIST <|>":
+        if not 'PLUGIN_LIST <|>' in scanList[0]:
 	    raise Exception('PLUGIN_LIST expected before retrieving OID') 
         else:
 	    for line in scanList[1:]:
