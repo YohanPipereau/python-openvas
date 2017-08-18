@@ -54,7 +54,7 @@ class OTP:
 	while not self.sock.stop:
 	    outputScanLine = self.sock.Receive(verbose)
 	    #print_verbose(outputScanLine)
-	    print(outputScanLine)
+	    #print(outputScanLine)
 	    buildJson.AddLine(outputScanLine)
 	jsonOutput = buildJson.FinalOutput()
 	return(jsonOutput)

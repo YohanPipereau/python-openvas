@@ -41,7 +41,7 @@ class SendFormat:
         smtpObj = smtplib.SMTP('127.0.0.1')
         smtpObj.sendmail(email_from, destinationAddr,self.msg.as_string())
         smtpObj.quit() #end the SMTP connection
-        print(Color.GREEN + "Email Sent!" + Color.END)
+        print('\n' + Color.GREEN + "Email Sent!" + Color.END)
  
     def SendFlume(self,flumeServer):
         """
