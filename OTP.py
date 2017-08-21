@@ -53,8 +53,6 @@ class OTP:
 	buildJson = ParseScan.ParseScan(target, familyDict)
 	while not self.sock.stop:
 	    outputScanLine = self.sock.Receive(verbose)
-	    #print_verbose(outputScanLine)
-	    #print(outputScanLine)
-	    buildJson.AddLine(outputScanLine)
+	    buildJson.AddLine(outputScanLine, verbose)
 	jsonOutput = buildJson.FinalOutput()
 	return(jsonOutput)

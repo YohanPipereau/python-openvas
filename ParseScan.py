@@ -60,12 +60,17 @@ class ParseScan:
 }
 	return bodyDict
 
-    def AddLine(self,outputScanLine):
+    def AddLine(self,outputScanLine,verbose):
         """
             ParserJson est le Parser qui renvoie le Json contenant
             les logs du scan.
             Afin de correspondre au JsonHandler de Flume, voici sa forme
         """
+	if verbose:
+	    def print_verbose(x) : print(x)
+	else:
+	    def print_verbose(x): None
+	print_verbose(outputScanLine)
         scanList = outputScanLine.split("SERVER <|>")
         for motiv in scanList:
 	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
@@ -74,7 +79,7 @@ class ParseScan:
 		bodyDict = self.createBody(motiv)
 		bodyJson = json.dumps(bodyDict)
                 self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
-	    elif 'STATUS <|>' in motiv:
+	    elif 'STATUS <|>' in motiv and not verbose:
 		ProgressBar.AddLine(motiv)
         return 0
 
