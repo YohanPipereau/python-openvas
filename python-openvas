@@ -48,7 +48,6 @@ parser.add_argument('-l', '--list-families', help="List the families available (
 parser.add_argument('-e', '--email', metavar="x1@example.com, x2@example.com", type=str, nargs="+", help="Send the report to someone@example.com by email", dest="email")
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
-#parser.add_argument('--scan-timeout', type=int, nargs=1, help="Set a timeout for the scan depending if the firewall is up or down. Default is 300s.", dest="scan_timeout",default=300)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
 parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help="Define the sender of the email report", dest="email_from", default="openvas@cern.ch")
 parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, help="Define the subject of the email. Default is Openvas Report", dest="email_subject", default="Openvas Report")

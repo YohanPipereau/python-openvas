@@ -103,10 +103,17 @@ or just read opevas-scanner source code: https://wald.intevation.org/scm/viewvc.
 -Check the database is indeed clear: redis-cli -s /var/run/redis/redis.sock dbsize
 openvassd stores data in redis database 1 (SELECT 1), thus, oid can be retrieved by doing ("KEYS" "oid:*:name")
 then SMEMBERS 'oid:<oid>:name' to get the path to the plugin in /var/lib/openvas/plugins
+#Details for the bug: 'A new database get added everytime we run a scan and is supposed to get deleted at some point but sometimes it is not.
+#Multiple KBs can be served in parallel, for multiple hosts scanned by one or several tasks. This is done using redis databases, which are independent namepaces.
+#The DB#0, which is where every new connected client starts, is reserved and used to schedule concurrent accesses to the available namespaces.
+#It contains a single variable, called 'OpenVAS.__GlobalDBIndex'. This variable is a bitmap of the different namespaces. 
+#When opening a new DB, the scanner will look for the first bit that is not set, starting from 1 to the maximum number of available DBs.
+#If none is found, the scanner will enter a wait and retry loop. 
+#Otherwise, it will (atomically, along with the check) set the bit to 1 and switch to the selected namespace.'
+# In redis.conf file, you can change the number of databases run redis-cli -s /var/run/redis/redis.sock INFOKEYSPACE in order to get the number of databases currently used in redis-server.
 
 *python-openvas report socket.error Broken pipe.
 Restart openvas-scanner.
-
 
 * openvas-scanner fails to start:
 -Check in /var/run/ if you have a openvassd.pid file, it is due to openvas-scanner launched without systemd

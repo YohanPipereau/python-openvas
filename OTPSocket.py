@@ -4,7 +4,7 @@
 
 import os, socket
 
-class SocketConnect:
+class OTPSocket:
 
     def __init__(self, unixsocket_path = '/var/run/openvassd.sock'):
         self.unixsocket_path = unixsocket_path

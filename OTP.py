@@ -1,5 +1,5 @@
 import sys
-import SocketConnect, ParseOid, ParseScan, Color
+import OTPSocket, ParseOid, ParseScan, Color
 
 class OTP:
     """
@@ -7,7 +7,7 @@ class OTP:
     """
 
     def __init__(self, oidTimeout):
-        self.sock = SocketConnect.SocketConnect()
+        self.sock = OTPSocket.OTPSocket()
 	self.oidTimeout = oidTimeout
         
     def ListFamilies(self):
