@@ -36,11 +36,9 @@ class OTP:
 	NVT_CHECKSUM = self.sock.Receive().split('<|> ')[1][6:]
 	self.sock.Send("\n") #Need to add this to retrieve the config as well 
 	self.sock.Receive() #Receive config
-	print(NVT_CHECKSUM)
 	if os.path.isfile('conf/nvtchecksum.conf'):
 	    with open('conf/nvtchecksum.conf', 'r') as nvt_checksum_file:
 		NVT_CHECKSUM_FILE = nvt_checksum_file.read()
-	    print(NVT_CHECKSUM_FILE)
 	    if NVT_CHECKSUM_FILE == NVT_CHECKSUM:
 	        with open('conf/currentnvt.json', 'r') as nvt_dict_file:
 	            familyDict = json.load(nvt_dict_file)
