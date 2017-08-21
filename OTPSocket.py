@@ -41,7 +41,7 @@ class OTPSocket:
 	last, cur = '', ''
 	if not '<|> SERVER' in acc:
 	    while not '<|> SERVER' in last + cur:
-		last, cur = cur, self.sock.recv(1024)
+		last, cur = cur, self.sock.recv(4096)
 		acc += self.remain.strip() + cur
 		#acc += cur
 	(useNow, self.remain) = acc.split('<|> SERVER',1)
