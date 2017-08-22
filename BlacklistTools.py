@@ -2,8 +2,8 @@ import Color
 
 class BlacklistTools:
 
-    def __init__(self):
-	pass
+    def __init__(self, familyDict):
+	self.familyDict = familyDict
 
     def searchFamily(self, oid):
         """
@@ -14,30 +14,32 @@ class BlacklistTools:
                     return k
         return None
 
-    def Info(self, familyDict):
+    def Info(self):
         """
            Print information about blacklisted OID.
         """
-        print(Color.GREEN + 'Blacklisted OID information' + Color.END)
+        print(Color.GREEN + 'Blacklisted OID information :' + Color.END)
 	with open('conf/blacklist.conf', 'r') as blacklistFile:
 	    blacklist = blacklistFile.readlines()
 	#Find the blacklisted oid in dictionnary:
 	for oid in blacklist:
-	    oidFamily = searchFamily(oid)
-	    oidName = familyDict[oidFamily][oid]['name']
-	    oidDescription = familyDict[oidFamily][oid]['description']
-	    oidCVE = familyDict[oidFamily][oid]['CVE']
-	    oidBID = familyDict[oidFamily][oid]['BID']
-	    oidURL = familyDict[oidFamily][oid]['URL']
-	    message = """
-	    ** {} , {} **
-	    * Family of Vulnerability : {}
-	    * CVE : {}
-	    * BID : {}
-	    * URL : {}
-	    * Description: {}
-	    """).format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
-	    print(message)
+	    try:
+		oidFamily = self.searchFamily(oid)
+		oidName = self.familyDict[oidFamily][oid]['name']
+		oidDescription = self.familyDict[oidFamily][oid]['description']
+		oidCVE = self.familyDict[oidFamily][oid]['CVE']
+		oidBID = self.familyDict[oidFamily][oid]['BID']
+		oidURL = self.familyDict[oidFamily][oid]['URL']
+		message = """
+    ** {0} , {1} **
+    * Family of Vulnerability : {2}
+    * CVE : {3}
+    * BID : {4}
+    * URL : {5}
+    * Description: {6}""".format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
+		print(message)
+	    except KeyError:
+		print(Color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancien plugin.' + Color.END)
 	return 0
 	
     def AddOid(self, number):

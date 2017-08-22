@@ -54,7 +54,7 @@ parser.add_argument('-s', '--socket-path', metavar="/var/run/openvassd.sock (def
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
-parser.add_argument('--blacklist-info', type=bool, help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
+parser.add_argument('--blacklist-info', help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
 
 args = parser.parse_args()
 
@@ -87,8 +87,8 @@ elif args.target:
 elif args.blacklist_info:
     familyDict = otp.ListFamilies()
     otp.sock.Close()
-    blacklist = BlacklistTools.BlacklistTools()
-    blacklist.Info(familyDict)
+    blacklist = BlacklistTools.BlacklistTools(familyDict)
+    blacklist.Info()
     sys.exit(0)
 
 else:
