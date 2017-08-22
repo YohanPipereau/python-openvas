@@ -50,14 +50,14 @@ parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help=
 parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, help="Define the subject of the email. Default is Openvas Report", dest="email_subject", default="Openvas Report")
 parser.add_argument('--no-file', help="No Report file is output", dest="outputFile", action='store_false', default=True)
 parser.add_argument('-o', '--output-directory', metavar="/opt/openvas/reports (default)", type=str, nargs=1, help="Write the report on the machine directory..", dest="outputDirPath", default='/opt/openvas/reports')
-#parser.add_argument('-s, '--socket-path', metavar="/var/run/openvassd.sock (default)", type=str, nargs=1, help="Define OpenVAS scanner socket path...", dest="socketPath", default='/var/run/openvassd.sock')
+parser.add_argument('-s', '--socket-path', metavar="/var/run/openvassd.sock (default)", type=str, nargs=1, help="Define OpenVAS scanner socket path...", dest="unixsocket_path", default='/var/run/openvassd.sock')
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
 
 args = parser.parse_args()
 
-otp = OTP.OTP(args.oid_timeout)
+otp = OTP.OTP(args.oid_timeout, args.unixsocket_path)
 
 if args.list_families:
     familyDict = otp.ListFamilies() #retrieve families anyway

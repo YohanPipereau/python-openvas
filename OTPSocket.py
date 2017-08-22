@@ -6,7 +6,7 @@ import os, socket
 
 class OTPSocket:
 
-    def __init__(self, unixsocket_path = '/var/run/openvassd.sock'):
+    def __init__(self, unixsocket_path):
         self.unixsocket_path = unixsocket_path
 	try:
              os.path.isfile(unixsocket_path) #Check the existence of the socket

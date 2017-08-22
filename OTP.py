@@ -7,8 +7,8 @@ class OTP:
 	This module handles OTP communication with the scanner.
     """
 
-    def __init__(self, oidTimeout):
-        self.sock = OTPSocket.OTPSocket()
+    def __init__(self, oidTimeout, unixsocket_path):
+        self.sock = OTPSocket.OTPSocket(unixsocket_path)
 	self.oidTimeout = oidTimeout
        
     def BuildNVTDict(self, NVT_CHECKSUM):
@@ -83,7 +83,7 @@ class OTP:
 	    return(jsonOutput)
 	except KeyboardInterrupt:
 	    self.sock.Send('CLIENT <|> STOP_WHOLE_TEST <|> CLIENT')
-	    print(Color.BLUE + 'Wait 30 seconds to kill all resources properly !' + Color.END)
+	    print(Color.BLUE + 'Wait around 30 seconds to kill all resources properly !' + Color.END)
 	    self.sock.Receive(verbose)
 	    print(Color.BLUE + 'Bye !' + Color.END)
 	    sys.exit(0)
