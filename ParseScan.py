@@ -1,5 +1,6 @@
 import time,json,collections, socket
-import Color, ProgressBar
+import progressbar
+import Color
 
 class ParseScan:
 
@@ -80,10 +81,15 @@ class ParseScan:
 		bodyJson = json.dumps(bodyDict)
                 self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
 	    elif 'STATUS <|>' in motiv and not verbose:
-		ProgressBar.AddLine(motiv)
+		current_no_of_completed_tests, total_no_of_tests = motiv.split(' <|> ')[2].split('/')
+		if int(current_no_of_completed_tests) == 0:
+		    self.pbar = progressbar.ProgressBar(maxval = int(total_no_of_tests)).start()
+		self.pbar.update(int(current_no_of_completed_tests))
         return 0
 
-    def FinalOutput(self):
+    def FinalOutput(self,verbose):
+	if not verbose:
+	    self.pbar.finish()
 	jsonOutput = json.dumps(self.jsonDict)	
 	return jsonOutput
 

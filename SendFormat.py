@@ -6,6 +6,8 @@ class SendFormat:
 
     def __init__(self, jsonOutput):
 	self.jsonOutput = jsonOutput
+	with open('conf/blacklist.conf', 'r') as blacklistFile:
+	    self.blacklist = blacklistFile.readlines()
 
     def BuildReport(self, tagList):
 	"""
@@ -18,13 +20,16 @@ class SendFormat:
 	    bodyDict = json.loads(tmpDict[k]['body'])
 	    if bodyDict['plugin']['type'] in tagList:
 		oidNumber = bodyDict['plugin']['oid']
-		nameOfOid = bodyDict['plugin']['name']
-		familyOfOid = bodyDict['plugin']['family']
-                CVEOfOid = bodyDict['plugin']['CVE']
-                BIDOfOid = bodyDict['plugin']['BID']
-                URLOfOid = bodyDict['plugin']['URL']
-		message = bodyDict['plugin']['message']
-		report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
+		if oidNumber not in self.blacklist:
+		    nameOfOid = bodyDict['plugin']['name']
+		    familyOfOid = bodyDict['plugin']['family']
+		    CVEOfOid = bodyDict['plugin']['CVE']
+		    BIDOfOid = bodyDict['plugin']['BID']
+		    URLOfOid = bodyDict['plugin']['URL']
+		    message = bodyDict['plugin']['message']
+		    report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
+		else:
+		    print(Color.BLUE + 'Oid' + oidNumber + 'is blacklisted thus not included in report !' + Color.END)
         return(report)
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):
@@ -59,4 +64,4 @@ class SendFormat:
 	outputFilePath =  outputDirPath + '/' + str(int(time.time()))
 	with open(outputDirPath + '/' + str(int(time.time())),'w+') as fileReport:
 	    fileReport.write(msg)
-	print(Color.GREEN + 'Report written in file ' + outputFilePath Color.END)
+	print(Color.GREEN + 'Report written in file ' + outputFilePath + Color.END)

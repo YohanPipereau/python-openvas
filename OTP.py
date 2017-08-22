@@ -1,5 +1,6 @@
-import sys, json, os
-import OTPSocket, ParseOid, ParseScan, Color, time
+import sys, json, os, time
+import OTPSocket, ParseOid, ParseScan, Color
+from threading import Thread
 
 class OTP:
     """
@@ -67,15 +68,22 @@ class OTP:
 	    It runs the scan by talking to the unixsocket of the scanner, then
 	    it outputs a file containing all the information of the scanner scan.
 	"""
-	print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
-	oidString = ';'.join(oidList)
-	with open('conf/scan.conf') as f:
-	    confFile = f.read() #Read the content of the configuration file and let the CR !! important
-	message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
-	self.sock.Send(message)
-	buildJson = ParseScan.ParseScan(target, familyDict)
-	while not self.sock.stop:
-	    outputScanLine = self.sock.Receive(verbose)
-	    buildJson.AddLine(outputScanLine, verbose)
-	jsonOutput = buildJson.FinalOutput()
-	return(jsonOutput)
+	try:
+	    print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
+	    oidString = ';'.join(oidList)
+	    with open('conf/scan.conf') as f:
+		confFile = f.read() #Read the content of the configuration file and let the CR !! important
+	    message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
+	    self.sock.Send(message)
+	    buildJson = ParseScan.ParseScan(target, familyDict)
+	    while not self.sock.stop:
+		outputScanLine = self.sock.Receive(verbose)
+		buildJson.AddLine(outputScanLine, verbose)
+	    jsonOutput = buildJson.FinalOutput(verbose)
+	    return(jsonOutput)
+	except KeyboardInterrupt:
+	    self.sock.Send('CLIENT <|> STOP_WHOLE_TEST <|> CLIENT')
+	    print(Color.BLUE + 'Wait 30 seconds to kill all resources properly !' + Color.END)
+	    self.sock.Receive(verbose)
+	    print(Color.BLUE + 'Bye !' + Color.END)
+	    sys.exit(0)
