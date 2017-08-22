@@ -55,6 +55,9 @@ parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info i
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
 parser.add_argument('--blacklist-info', help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
+#parser.add_argument('--blacklist-ignore', help="Ignore blacklisted oid from blacklsit.conf", dest="blacklist_ignore", action='store_true')
+parser.add_argument('--blacklist-add',metavar='1.3.6.1.4.1.25623.1.0.80110', nargs="+", help="Add the oid to blacklist.conf", dest="blacklist_add")
+parser.add_argument('--blacklist-remove',metavar='1.3.6.1.4.1.25623.1.0.80110', nargs="+", help="Remove the oid from blacklist.conf", dest="blacklist_remove")
 
 args = parser.parse_args()
 
@@ -90,6 +93,14 @@ elif args.blacklist_info:
     blacklist = BlacklistTools.BlacklistTools(familyDict)
     blacklist.Info()
     sys.exit(0)
+
+elif args.blacklist_add:
+    blacklist = BlacklistTools.BlacklistTools('')
+    blacklist.AddOid(args.blacklist_add)
+	
+elif args.blacklist_remove:
+    blacklist = BlacklistTools.BlacklistTools('')
+    blacklist.RemoveOid(args.blacklist_remove)
 
 else:
     print(Color.RED + "Arguments missing !" + Color.END)
