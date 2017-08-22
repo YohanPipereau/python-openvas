@@ -35,7 +35,7 @@ VERSION = '1.0'
 
 
 import sys, signal, re, socket, argparse #General module
-import Email, SendFormat, ParseScan, IPTool, OTP, Color #Personnal class
+import Email, SendFormat, ParseScan, IPTool, OTP, Color, BlacklistTools #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
@@ -54,6 +54,7 @@ parser.add_argument('-s', '--socket-path', metavar="/var/run/openvassd.sock (def
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
 parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(VERSION))
+parser.add_argument('--blacklist-info', type=bool, help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
 
 args = parser.parse_args()
 
@@ -82,5 +83,14 @@ elif args.target:
     if args.outputFile:
 	sendFormatObj.WriteFile(args.outputDirPath)
     sys.exit(0)
+
+elif args.blacklist_info:
+    familyDict = otp.ListFamilies()
+    otp.sock.Close()
+    blacklist = BlacklistTools.BlacklistTools()
+    blacklist.Info(familyDict)
+    sys.exit(0)
+
 else:
     print(Color.RED + "Arguments missing !" + Color.END)
+
