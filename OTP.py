@@ -42,6 +42,8 @@ class OTP:
 	if os.path.isfile('conf/nvtchecksum.conf'):
 	    with open('conf/nvtchecksum.conf', 'r') as nvt_checksum_file:
 		NVT_CHECKSUM_FILE = nvt_checksum_file.read()
+	    self.sock.Send("\n")
+	    test = self.sock.Receive()
 	    if NVT_CHECKSUM_FILE == NVT_CHECKSUM:
 	        with open('conf/currentnvt.json', 'r') as nvt_dict_file:
 	            familyDict = json.load(nvt_dict_file)
@@ -84,8 +86,5 @@ class OTP:
 	    jsonOutput = buildJson.FinalOutput(verbose)
 	    return(jsonOutput)
 	except KeyboardInterrupt:
-	    self.sock.Send('CLIENT <|> STOP_WHOLE_TEST <|> CLIENT')
-	    print(Color.BLUE + 'Wait around 30 seconds to kill all resources properly !' + Color.END)
-	    self.sock.Receive(verbose)
 	    print(Color.BLUE + 'Bye !' + Color.END)
 	    sys.exit(0)

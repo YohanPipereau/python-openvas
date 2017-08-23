@@ -1,4 +1,4 @@
-import time,json,collections, socket
+import time,json,collections, socket, os
 import progressbar
 import Color
 
@@ -12,8 +12,9 @@ class ParseScan:
     def __init__(self,target,familyDict):
         self.target = target
         self.report = ""
-        with open('conf/blacklist.conf', 'r') as blacklistFile:
-            self.blacklist=blacklistFile.read().splitlines()
+	if os.path.isfile('conf/blacklist.conf'):
+ 	    with open('conf/blacklist.conf', 'r') as blacklistFile:
+                self.blacklist=blacklistFile.read().splitlines()
         self.familyDict = familyDict #required for  name & description of plugin oid
         self.jsonDict = [] #jsonDict is an array containing the Json Dictionnary
 
@@ -55,6 +56,7 @@ class ParseScan:
         "CVE" : self.familyDict[familyOfOid][oidNumber]["CVE"],
         "BID" : self.familyDict[familyOfOid][oidNumber]['BID'],
         "URL" : self.familyDict[familyOfOid][oidNumber]["URL"],
+        "grade" : self.familyDict[familyOfOid][oidNumber]["grade"],
         "message" : str(motivParsed[3]),
         "type": "LOG" if "LOG <|>" in motiv else "ALARM"
 	}

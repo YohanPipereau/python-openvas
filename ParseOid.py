@@ -1,4 +1,4 @@
-import sys
+import sys, re
 from collections import namedtuple
 
 class ParseOid():
@@ -46,10 +46,12 @@ class ParseOid():
 	    oidBID = oidList[7]	    
 	    oidURL = oidList[8]
 	    oidDescription = oidList[9]
+	    regex = r'cvss_base=(?P<cvss>.[\d\.\d]+)'
+	    oidCVSSScore = re.findall(regex,oidList[9])[0]
             if oidFamily in self.familyDict.keys():# oid family already in dict
-                    self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription , "CVE" : oidCVE , "BID" : oidBID, "URL" : oidURL}})
+                    self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription , "CVE" : oidCVE , "BID" : oidBID, "URL" : oidURL, 'grade' : oidCVSSScore}})
             else: #oid family appended to dict
-                self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription, "CVE" : oidCVE , "BID" : oidBID , "URL" : oidURL}}})
+                self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription, "CVE" : oidCVE , "BID" : oidBID , "URL" : oidURL, 'grade' : oidCVSSScore}}})
         else:
             raise Exception("Error! oidList has a size different of 10 characters.")
             sys.exit(2)

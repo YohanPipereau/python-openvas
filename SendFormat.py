@@ -27,7 +27,8 @@ class SendFormat:
 		    BIDOfOid = bodyDict['plugin']['BID']
 		    URLOfOid = bodyDict['plugin']['URL']
 		    message = bodyDict['plugin']['message']
-		    report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
+		    grade = bodyDict['plugin']['grade']
+		    report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Danger (/10):" + grade + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
 		else:
 		    print(Color.BLUE + 'Oid' + oidNumber + 'is blacklisted thus not included in report !' + Color.END)
         return(report)

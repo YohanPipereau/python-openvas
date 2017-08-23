@@ -43,7 +43,6 @@ class OTPSocket:
 	    while not '<|> SERVER' in last + cur:
 		last, cur = cur, self.sock.recv(8192)
 		acc += self.remain.strip() + cur
-		print(acc)
 	(useNow, self.remain) = acc.split('<|> SERVER',1)
 	if '<|> BYE' in cur:
 	    self.stop = True
