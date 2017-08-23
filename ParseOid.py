@@ -50,12 +50,6 @@ class ParseOid():
                     self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription , "CVE" : oidCVE , "BID" : oidBID, "URL" : oidURL}})
             else: #oid family appended to dict
                 self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription, "CVE" : oidCVE , "BID" : oidBID , "URL" : oidURL}}})
-	    #RenameOidList = namedtuple('oidListUseful' , ['oidNumber', 'oidName', 'oidFamily', 'oidCVE', 'oidBID', 'oidURL', 'oidDescription'])
-	    #a = RenameOidList._make([oidList[0], oidList[1], oidList[4], oidList[6], oidList[7], oidList[8], oidList[9]])
-            #if a.oidFamily in self.familyDict.keys():# oid family already in dict
-            #        self.familyDict[a.oidFamily].update( {a.oidNumber : {"name" : a.oidName , "description" : a.oidDescription , "CVE" : a.oidCVE , "BID" : a.oidBID, "URL" : a.oidURL}})
-            #else: #oid family appended to dict
-            #    self.familyDict.update({ a.oidFamily : {a.oidNumber : { "name" : a.oidName, "description" : a.oidDescription, "CVE" : a.oidCVE , "BID" : a.oidBID , "URL" : a.oidURL}}})
         else:
             raise Exception("Error! oidList has a size different of 10 characters.")
             sys.exit(2)

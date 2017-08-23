@@ -17,7 +17,6 @@ class OTP:
 	"""
 	self.sock.Send('CLIENT <|> COMPLETE_LIST <|> CLIENT\n')
 	rawOid = self.sock.Receive(verbose=False)
-	print('ok')
 	self.sock.Send("\n") #Need to add this to retrieve the config as well 
 	self.sock.Receive() #Receive config
 	oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
