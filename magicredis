@@ -1,0 +1,12 @@
+#!/bin/bash
+
+redis_socket='/var/run/redis/redis.sock'
+
+echo "Don't run this script while scanning a device with python-openvas"
+out=$(redis-cli -s $redis_socket INFO keyspace | awk 'match($0, /b(.*):/, a) {print a[1]}')
+list=${out[@]:1}
+for cmpt in $list
+do
+    echo -e "SELECT $cmpt\n FLUSHDB\n HDEL "OpenVAS.__GlobalDBIndex" $cmpt" | redis-cli -s /var/run/redis/redis.sock
+    echo 'database n°' + $cmpt + 'deleted'
+done
