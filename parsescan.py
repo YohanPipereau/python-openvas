@@ -1,6 +1,4 @@
-import time,json,collections, socket, os
-import progressbar
-import Color
+import time,json,collections, socket, os, progressbar 
 
 class ParseScan:
 

@@ -1,5 +1,5 @@
 import sys, json, os, time
-import OTPSocket, ParseOid, ParseScan, Color
+import otpsocket, parseoid, parsescan, color
 from threading import Thread
 
 class OTP:
@@ -8,7 +8,7 @@ class OTP:
     """
 
     def __init__(self, oidTimeout, unixsocket_path):
-        self.sock = OTPSocket.OTPSocket(unixsocket_path)
+        self.sock = otpsocket.OTPSocket(unixsocket_path)
 	self.oidTimeout = oidTimeout
        
     def BuildNVTDict(self, NVT_CHECKSUM):
@@ -19,7 +19,7 @@ class OTP:
 	rawOid = self.sock.Receive(verbose=False)
 	self.sock.Send("\n") #Need to add this to retrieve the config as well 
 	self.sock.Receive() #Receive config
-	oid = ParseOid.ParseOid() #Let's parse the answer of the scanner
+	oid = parseoid.ParseOid() #Let's parse the answer of the scanner
 	oid.Parser(rawOid)
         with open('conf/currentnvt.json', 'w+') as nvt_dict_file:
 	    json.dump(oid.familyDict, nvt_dict_file)
@@ -32,7 +32,7 @@ class OTP:
 	    This function is called from the main file.
 	    It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
 	"""
-	print(Color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + Color.END)
+	print(color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + color.END)
 	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\n')
 	NVT_CHECKSUM = self.sock.Receive().split('<|> ')[1][6:]
 	if os.path.isfile('conf/nvtchecksum.conf'):
@@ -69,18 +69,18 @@ class OTP:
 	    it outputs a file containing all the information of the scanner scan.
 	"""
 	try:
-	    print(Color.GREEN + "Please Wait, while we scan the device ..." + Color.END)
+	    print(color.GREEN + "Please Wait, while we scan the device ..." + color.END)
 	    oidString = ';'.join(oidList)
 	    with open('conf/scan.conf') as f:
 		confFile = f.read() #Read the content of the configuration file and let the CR !! important
 	    message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
 	    self.sock.Send(message)
-	    buildJson = ParseScan.ParseScan(target, familyDict)
+	    buildJson = parsescan.ParseScan(target, familyDict)
 	    while not self.sock.stop:
 		outputScanLine = self.sock.Receive(verbose)
 		buildJson.AddLine(outputScanLine, verbose)
 	    jsonOutput = buildJson.FinalOutput(verbose)
 	    return(jsonOutput)
 	except KeyboardInterrupt:
-	    print(Color.BLUE + 'Bye !' + Color.END)
+	    print(color.BLUE + 'Bye !' + color.END)
 	    sys.exit(0)

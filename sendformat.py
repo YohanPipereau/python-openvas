@@ -1,5 +1,5 @@
-import requests, json, smtplib, time
-import Color, ParseScan, Email, datetime
+import requests, json, smtplib, time, datetime, openvas_email
+import color
 from email.mime.text import MIMEText
 
 class SendFormat:
@@ -30,7 +30,7 @@ class SendFormat:
 		    grade = bodyDict['plugin']['grade']
 		    report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Danger (/10):" + grade + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
 		else:
-		    print(Color.BLUE + 'Oid' + oidNumber + 'is blacklisted thus not included in report !' + Color.END)
+		    print(color.BLUE + 'Oid' + oidNumber + 'is blacklisted thus not included in report !' + color.END)
         return(report)
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):
@@ -48,14 +48,14 @@ class SendFormat:
         smtpObj = smtplib.SMTP('127.0.0.1')
         smtpObj.sendmail(email_from, destinationAddr,self.msg.as_string())
         smtpObj.quit() #end the SMTP connection
-        print(Color.GREEN + "Email Sent!" + Color.END)
+        print(color.GREEN + "Email Sent!" + color.END)
  
     def SendFlume(self,flumeServer):
         """
 	    SendFlume() ends JSON to Flume server.
 	"""
         requests.post(flumeServer, json=self.jsonOutput)
-        print(Color.GREEN + "JSON Sent!" + Color.END)
+        print(color.GREEN + "JSON Sent!" + color.END)
 
     def WriteFile(self,outputDirPath):
         """
@@ -65,4 +65,4 @@ class SendFormat:
 	outputFilePath =  outputDirPath + '/' + str(int(time.time()))
 	with open(outputDirPath + '/' + str(int(time.time())),'w+') as fileReport:
 	    fileReport.write(msg)
-	print(Color.GREEN + 'Report written in file ' + outputFilePath + Color.END)
+	print(color.GREEN + 'Report written in file ' + outputFilePath + color.END)

@@ -1,4 +1,4 @@
-import Color
+import color
 
 class BlacklistTools:
 
@@ -18,7 +18,7 @@ class BlacklistTools:
         """
            Print information about blacklisted OID.
         """
-        print(Color.GREEN + 'Blacklisted OID information :' + Color.END)
+        print(color.GREEN + 'Blacklisted OID information :' + color.END)
 	with open('conf/blacklist.conf', 'r') as blacklistFile:
 	    blacklist = blacklistFile.readlines()
 	#Find the blacklisted oid in dictionnary:
@@ -39,7 +39,7 @@ class BlacklistTools:
 * Description: {6}""".format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
 		print(message)
 	    except KeyError:
-		print(Color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancien plugin.' + Color.END)
+		print(color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancien plugin.' + color.END)
 	return 0
 
     def searchOid(self, oid):
@@ -62,11 +62,11 @@ class BlacklistTools:
 	for oid in oidList:
 	    isFound, _ = self.searchOid(oid)
 	    if isFound:
-	       print(Color.RED + oid.strip() + ' Already in blacklist.conf.' + Color.END) 
+	       print(color.RED + oid.strip() + ' Already in blacklist.conf.' + color.END) 
 	    else:
 		with open('conf/blacklist.conf', 'w') as blacklistFile:
 		    blacklistFile.write(oid) 
-		print(Color.GREEN + oid.strip() + ' added to blacklist.conf' + Color.END)
+		print(color.GREEN + oid.strip() + ' added to blacklist.conf' + color.END)
 	return 0
 
     def RemoveOid(self, oidList):
@@ -82,6 +82,6 @@ class BlacklistTools:
 		with open('conf/blacklist.conf', 'w+') as blacklistFile:
 		    for line in wholeFile:
 			blacklistFile.write(line)
-		print(Color.GREEN + oid.strip() + ' removed from blacklist.conf' + Color.END)
+		print(color.GREEN + oid.strip() + ' removed from blacklist.conf' + color.END)
 	    else:
-		print(Color.RED + oid.strip() + ' is not in blacklist.conf' + Color.END)
+		print(color.RED + oid.strip() + ' is not in blacklist.conf' + color.END)

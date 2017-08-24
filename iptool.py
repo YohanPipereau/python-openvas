@@ -1,5 +1,5 @@
 import socket, sys
-import Color
+import color
 
 class IPTool:
     """
@@ -27,7 +27,7 @@ class IPTool:
             try:
                 b2 = socket.inet_pton(socket.AF_INET,self.address)
             except:
-                print(Color.RED + "Invalid IP format !\nYet, IPv6 and IPv4 handled." + Color.END)
+                print(color.RED + "Invalid IP format !\nYet, IPv6 and IPv4 handled." + color.END)
                 sys.exit(1)
 
     def ValidDNIP(self):

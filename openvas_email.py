@@ -1,4 +1,4 @@
-import smtplib, Color
+import smtplib, color
 from email.mime.text import MIMEText
 
 class Email:
@@ -24,6 +24,6 @@ class Email:
         self.setHeaders()
         smtpObj.sendmail('openvas@cern.ch', self.destinationAddr,self.msg.as_string())
         smtpObj.quit() #end the SMTP connection
-        print(Color.GREEN + "Email Sent!" + Color.END)
+        print(color.GREEN + "Email Sent!" + color.END)
 
 

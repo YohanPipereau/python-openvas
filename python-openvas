@@ -35,7 +35,7 @@ VERSION = '1.0'
 DEFAULT_FAMILY = ['Finger abuses', 'Malware', 'Windows : Microsoft Bulletins', 'Netware', 'Default Accounts', 'Buffer overflow', 'Policy', 'Useless services', 'Product detection', 'Denial of Service', 'SSL and TLS', 'Gain a shell remotely', 'Web application abuses', 'Service detection', 'RPC', 'Brute force attacks', 'FTP', 'Compliance', 'Settings', 'Windows', 'Nmap NSE', 'Databases', 'Firewalls', 'Credentials', 'IT-Grundschutz', 'SMTP problems', 'Nmap NSE net', 'CISCO', 'Remote file access', 'SNMP', 'Web Servers', 'General', 'Peer-To-Peer File Sharing', 'Privilege escalation', 'Port scanners', 'IT-Grundschutz-12', 'IT-Grundschutz-13', 'IT-Grundschutz-10', 'IT-Grundschutz-11']
 
 import sys, signal, re, socket, argparse #General module
-import Email, SendFormat, ParseScan, IPTool, OTP, Color, BlacklistTools #Personnal class
+import sendformat, iptool, otp, color, blacklisttools #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
@@ -61,7 +61,7 @@ parser.add_argument('--blacklist-remove',metavar='1.3.6.1.4.1.25623.1.0.80110', 
 
 args = parser.parse_args()
 
-otp = OTP.OTP(args.oid_timeout, args.unixsocket_path)
+otp = otp.OTP(args.oid_timeout, args.unixsocket_path)
 
 if args.list_families:
     familyDict = otp.ListFamilies() #retrieve families anyway
@@ -70,14 +70,14 @@ if args.list_families:
     sys.exit(0)
 
 elif args.target:
-    isIp = IPTool.IPTool(args.target[0])#Before Giving the ip to the scanner, test if it is a correct ip.
+    isIp = iptool.IPTool(args.target[0])#Before Giving the ip to the scanner, test if it is a correct ip.
     ipTarget = isIp.ValidDNIP()
-    print(Color.BLUE + "Don't forget to deactivate the target firewall !" + Color.END)
+    print(color.BLUE + "Don't forget to deactivate the target firewall !" + color.END)
     familyDict = otp.ListFamilies() #retrieve families anyway
     oidList = otp.FamilyToScan(args.all,args.family,familyDict)
     jsonOutput = otp.RunScan(ipTarget,args.verbose,oidList,familyDict)
     otp.sock.Close()
-    sendFormatObj = SendFormat.SendFormat(jsonOutput)
+    sendFormatObj = sendformat.SendFormat(jsonOutput)
     if args.json:
 	sendFormatObj.SendFlume(args.flume_server)
     if args.email:
@@ -90,18 +90,18 @@ elif args.target:
 elif args.blacklist_info:
     familyDict = otp.ListFamilies()
     otp.sock.Close()
-    blacklist = BlacklistTools.BlacklistTools(familyDict)
+    blacklist = blacklisttools.BlacklistTools(familyDict)
     blacklist.Info()
     sys.exit(0)
 
 elif args.blacklist_add:
-    blacklist = BlacklistTools.BlacklistTools('')
+    blacklist = blacklisttools.BlacklistTools('')
     blacklist.AddOid(args.blacklist_add)
 	
 elif args.blacklist_remove:
-    blacklist = BlacklistTools.BlacklistTools('')
+    blacklist = blacklisttools.BlacklistTools('')
     blacklist.RemoveOid(args.blacklist_remove)
 
 else:
-    print(Color.RED + "Arguments missing !" + Color.END)
+    print(color.RED + "Arguments missing !" + color.END)
 
