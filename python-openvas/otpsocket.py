@@ -3,6 +3,7 @@
 """
 
 import os, socket
+import color
 
 class OTPSocket:
 
@@ -17,7 +18,7 @@ class OTPSocket:
 	self.sock.send('< OTP/2.0 >\n')
 	checkprotocol = self.sock.recv(1024)
 	if checkprotocol !=  '< OTP/2.0 >\n':
-	    raise Exception('OTP 2.0 protocol required for this wrapper !')
+	    raise Exception(color.RED + 'OTP 2.0 protocol required for this wrapper !' + color.END)
 	self.stop = False
 	self.remain = ''
 
