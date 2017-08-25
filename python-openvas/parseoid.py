@@ -34,9 +34,9 @@ class ParseOid():
 	    raise Exception('PLUGIN_LIST expected before retrieving OID') 
         else:
 	    for line in scanList[1:]:
-		self.ParserLine(line)
+		self._ParserLine(line)
 
-    def ParserLine(self,line):
+    def _ParserLine(self,line):
         oidList=line.split(" <|> ")
         if len(oidList) == 10 :
 	    oidNumber = oidList[0]

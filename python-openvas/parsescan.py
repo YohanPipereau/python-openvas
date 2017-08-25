@@ -14,7 +14,7 @@ class ParseScan:
         self.jsonDict = [] #jsonDict is an array containing the Json Dictionnary
 	self.oidObj = oid.Oid(familyDict)
 
-    def createTemplate(self):
+    def _CreateTemplate(self):
         """
             Create Template Dictionnary which respects Flume default template.
         """
@@ -26,13 +26,13 @@ class ParseScan:
 }
 	return templateDict
 
-    def createBody(self,motiv):
+    def _CreateBody(self,motiv):
 	"""
 	    Create Body Dictionnary inserted in templateDict['body'] as JSON.
 	"""
 	motivParsed = motiv.split("<|> ")
 	oidNumber = motivParsed[4].strip()
-	familyOfOid = self.oidObj.searchFamily(oidNumber)
+	familyOfOid = self.oidObj.SearchFamily(oidNumber)
 	bodyDict = {
 "target" : self.target ,
 "plugin" : {
@@ -64,9 +64,9 @@ class ParseScan:
         scanList = outputScanLine.split("SERVER <|>")
         for motiv in scanList:
 	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
-		templateDict = self.createTemplate()
+		templateDict = self._CreateTemplate()
 		self.jsonDict.append(templateDict.copy())
-		bodyDict = self.createBody(motiv)
+		bodyDict = self._CreateBody(motiv)
 		bodyJson = json.dumps(bodyDict)
                 self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
 	    elif 'STATUS <|>' in motiv and not verbose:

@@ -9,7 +9,7 @@ class IPTool:
     def __init__(self,address):
         self.address = address #Ip or Domain Name
 
-    def ValidDN(self):
+    def _ValidDN(self):
         """
             Check if a domain name is well solved.
             Entry of the type 0.0 are automatically conpleted to 0.0.0.0.
@@ -17,7 +17,7 @@ class IPTool:
         self.address = socket.gethostbyname(self.address)
 	self.ValidIP() #is the IP received a good IP
 
-    def ValidIP(self):
+    def _ValidIP(self):
         """
             Check if an ip is valid or not.
         """
@@ -35,8 +35,8 @@ class IPTool:
             Check if Domain Name or IP is valid return IP of Target
         """
         try:
-            self.ValidDN()
+            self._ValidDN()
         except:
-            self.ValidIP()
+            self._ValidIP()
 	return(self.address)	
         
