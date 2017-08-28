@@ -9,7 +9,7 @@ class OTP:
     def __init__(self, unixsocket_path):
         self.sock = otpsocket.OTPSocket(unixsocket_path)
 
-    def GetNVTInfo(self):
+    def GetChecksum(self):
 	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\n')
 	data = self.sock.Receive()
 	if 'NVT_INFO' in data:
@@ -41,7 +41,7 @@ class OTP:
 	    It is used to retrieve a dictionnary of vulnerabilities oid,name,description,family
 	"""
 	print(color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + color.END)
-	nvt_checksum = self.GetNVTInfo()
+	nvt_checksum = self.GetChecksum()
 	if os.path.isfile('conf/nvtchecksum.conf'):
 	    with open('conf/nvtchecksum.conf', 'r') as nvt_checksum_file:
 		nvt_checksum_file = nvt_checksum_file.read()
@@ -66,7 +66,7 @@ class OTP:
 	    print(color.GREEN + "Please Wait, while we scan the device ..." + color.END)
 	    oidString = ';'.join(oidList)
 	    with open('conf/scan.conf') as f:
-		confFile = f.read() #Read the content of the configuration file and let the CR !! important
+		confFile = f.read() 
 	    message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
 	    self.sock.Send(message)
 	    buildJson = parsescan.ParseScan(target, familyDict)
@@ -76,5 +76,5 @@ class OTP:
 	    jsonOutput = buildJson.FinalOutput(verbose)
 	    return(jsonOutput)
 	except KeyboardInterrupt:
-	    print(color.BLUE + 'Bye ! If you face trouble, remind magicredis script.' + color.END)
+	    print(color.BLUE + 'Bye !' + color.END)
 	    sys.exit(0)

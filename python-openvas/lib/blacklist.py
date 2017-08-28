@@ -42,7 +42,6 @@ class Blacklist:
 * URL : {5}
 * Description: {6}""".format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
                 print(message)
-
             except KeyError:
                 print(color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancient or wrong plugin.' + color.END)
         return 0

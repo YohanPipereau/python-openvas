@@ -16,9 +16,9 @@ import argparse, sys
 from lib import __version__, blacklist, oid, otp
 
 parser = argparse.ArgumentParser(description="openvas-blacklsit menu")
-parser.add_argument('--blacklist-add',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Add the oid to blacklist.conf", dest="blacklist_add")
-parser.add_argument('--blacklist-remove',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Remove the oid from blacklist.conf", dest="blacklist_remove")
-parser.add_argument('--blacklist-info', help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
+parser.add_argument('--info', help="Print information about blacklisted oid", action='store_true')
+parser.add_argument('--add',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Add the oid to blacklist.conf")
+parser.add_argument('--remove',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Remove the oid from blacklist.conf")
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(__version__))
 parser.add_argument('-s', '--socket-path', metavar="/var/run/openvassd.sock", type=str, nargs=1, help="Define OpenVAS scanner socket path...", dest="unixsocket_path", default='/var/run/openvassd.sock')
 
@@ -26,13 +26,13 @@ args = parser.parse_args()
 
 blacklist = blacklist.Blacklist()
 
-if args.blacklist_remove:
-    blacklist.RemoveOid(args.blacklist_remove)
+if args.remove:
+    blacklist.RemoveOid(args.remove)
     sys.exit(0)
-elif args.blacklist_add:
-    blacklist.AddOid(args.blacklist_add)
+elif args.add:
+    blacklist.AddOid(args.add)
     sys.exit(0)
-elif args.blacklist_info:
+elif args.info:
     otp = otp.OTP(args.unixsocket_path)
     familyDict = otp.ListFamilies()
     oidinfo = oid.OidInfo(familyDict)
