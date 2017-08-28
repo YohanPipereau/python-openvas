@@ -35,23 +35,19 @@ class OidInfo:
 		print(message)
 #TODO: return dictionaire
 
-    def FamilyToScan(self,scanAll, familyScan, blacklistIgnore):
+    def FamilyToScan(self, family):
 	"""
-	    It puts the oid of the families to scan according to the arguments:
-	    all, default, families in a list later read by the RunScan function.
+	    It puts the oid of the families to scan according to family value:
+            family = None            --> Scan all families known
+            family = DEFAULT_FAMILY  --> Scan default families
+            family = [General, ...]  --> Scan families specified
 	"""
-	if not blacklistIgnore:
-	    with open('conf/blacklist.conf', 'r') as blacklistFile:
-		blacklistedOid = blacklistFile.readlines()
-	    for oid in blacklistedOid:
-		try:
-		    del self.familyDict[self.SearchFamily(oid.strip())][oid.strip()]
-		    print(color.GREEN + oid.strip() + ' is blacklisted' + color.END)
-		except KeyError:
-		    print(color.RED + oid.strip() + ' is not in oid databse please run python-openvas --blacklist-info to check if you should delete it.' + color.END)
-	if scanAll: #Let's scan all the families
+	if family == None: #all families
 	    oidListFamily = [ family.keys() for family in self.familyDict.values() ]
-	else: #scan families given in argument
+	else: #DEFAULT_FAMILY or [General, ...]
 	    oidListFamily = [ family.keys() for (name, family) in self.familyDict.items() if name in familyScan]
-	oidList = [ x for i in oidListFamily for x in i ]
-	return(oidList)
+	return([ oid for family in oidListFamily for oid in family ])
+
+    @staticmethod
+    def from_otp(raw):
+       pass 
