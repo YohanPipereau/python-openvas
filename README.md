@@ -1,13 +1,14 @@
-
-
-This python code aims at interacting directly with openvassd, also named openvas-scanner using the OTP protocol.
+This python code is a wrapper which interacts with openvassd, also named openvas-scanner using the OTP protocol.
 
 # Features:
 
-* Indicate the path to the unix socket used by openvassd : (by default: /var/run/openvassd.sock)
-* Sort out the NVT by the OS/devices targeted called families (Ubuntu, Cisco, gentoo, ...)
+* Scan a target according to families (General, CISCO, Malware, Buffer overflow ...)
+* Send Email with report
+* Write report to a file
+* Send report in json output for Apache Flume
+* Blacklist OIDs not to get them in report
 
-#Required Packages and program
+# Required Packages and program
 
 *openvas-manager (optional)
 -/usr/bin/greenbone-certdata-sync
