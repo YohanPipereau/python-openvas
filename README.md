@@ -4,7 +4,8 @@ This package include three tools and a library:
 * magicredis is a bash script useful to solve the problem of hanging scans.
 
 # Installation:
-[include](File:INSTALL.md)
+
+Read INSTALL.md file.
 
 # Features:
 
