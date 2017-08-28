@@ -31,12 +31,11 @@
 
 """
 
-from __init__ import __version__
 
 DEFAULT_FAMILY = ['Finger abuses', 'Malware', 'Windows : Microsoft Bulletins', 'Netware', 'Default Accounts', 'Buffer overflow', 'Policy', 'Useless services', 'Product detection', 'Denial of Service', 'SSL and TLS', 'Gain a shell remotely', 'Web application abuses', 'Service detection', 'RPC', 'Brute force attacks', 'FTP', 'Compliance', 'Settings', 'Windows', 'Nmap NSE', 'Databases', 'Firewalls', 'Credentials', 'IT-Grundschutz', 'SMTP problems', 'Nmap NSE net', 'CISCO', 'Remote file access', 'SNMP', 'Web Servers', 'General', 'Peer-To-Peer File Sharing', 'Privilege escalation', 'Port scanners', 'IT-Grundschutz-12', 'IT-Grundschutz-13', 'IT-Grundschutz-10', 'IT-Grundschutz-11']
 
 import sys, signal, re, socket, argparse #General module
-import sendformat, iptool, otp, color, blacklisttools, oid #Personnal class
+from lib import __version__, sendformat, iptool, otp, color, blacklisttools, oid #Personnal class
 
 argv=sys.argv[1:] #put the arguments in a string
 parser = argparse.ArgumentParser(description="openvas-handler menu")
