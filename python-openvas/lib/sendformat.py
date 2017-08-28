@@ -1,4 +1,4 @@
-import requests, json, smtplib, time, datetime
+import requests, json, smtplib, time, datetime, textwrap
 import color
 from email.mime.text import MIMEText
 
@@ -11,22 +11,26 @@ class SendFormat:
 	"""
 	    Build the Report sent to SendEmail or WriteFile.
 	    For Emails, only ALARM messages are included. tag = [ALARM]
-	    For File output, ALARM & LOG messages are included. tagList = [ALARM,LOG]	"""
+	    For File output, ALARM & LOG messages are included. tagList = [ALARM,LOG]
+        """
         report="Scanned on " + str(datetime.datetime.now())
 	tmpDict = json.loads(self.jsonOutput)
 	for k in range(len(tmpDict)-1):
-	    bodyDict = json.loads(tmpDict[k]['body'])
-	    if bodyDict['plugin']['type'] in tagList:
-		oidNumber = bodyDict['plugin']['oid']
-		nameOfOid = bodyDict['plugin']['name']
-		familyOfOid = bodyDict['plugin']['family']
-		CVEOfOid = bodyDict['plugin']['CVE']
-		BIDOfOid = bodyDict['plugin']['BID']
-		URLOfOid = bodyDict['plugin']['URL']
-		message = bodyDict['plugin']['message']
-		grade = bodyDict['plugin']['grade']
-		report += "\n***** %s :" %(bodyDict['plugin']['type']) + "\n-OID: " + oidNumber + "\n-Name: " + nameOfOid + "\n-Danger (/10):" + grade + "\n-Family: " + familyOfOid + '\n-CVE:' + CVEOfOid + '\n-BID:' + BIDOfOid + '\n' + URLOfOid + "\n" + message
-        return(report)
+	    d = json.loads(tmpDict[k]['body'])
+	    if d['plugin']['type'] in tagList:
+		report += """
+		***** {0} :
+		-OID: {1} + 
+		-Name: {2} 
+		-Danger (/10): {3}
+		-Family: {4}
+		-CVE: {5}
+		-BID: {6}
+		{7}
+		{8}
+                """.format(d['plugin']['type'], d['plugin']['oid'], d['plugin']['name'], d['plugin']['grade'], d['plugin']['family'], d['plugin']['CVE'], d['plugin']['BID'], d['plugin']['URL'], d['plugin']['message'])
+        print(textwrap.dedent(report))
+        return(textwrap.dedent(report))
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):
 	msg = self.BuildReport(tagList=['ALARM'])

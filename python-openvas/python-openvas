@@ -64,12 +64,12 @@ if args.target:
     isIp = iptool.IPTool(args.target[0])#test if correct ip.
     ipTarget = isIp.ValidDNIP()
     print(color.BLUE + "Don't forget to deactivate the target firewall !" + color.END)
-    oidObj = oid.Oid(familyDict)
+    oidObj = oid.OidInfo(familyDict)
     if args.all:
         if args.family != DEFAULT_FAMILY:
             print('--all and --family can\'t be used at the same time')
             sys.exit(1)
-    oidList = oidObj.FamilyToScan(args.all,args.family,args.blacklist_ignore)
+    oidList = oidObj.FamilyToScan(args.family)
     jsonOutput = otp.RunScan(ipTarget,args.verbose,oidList, familyDict)
     otp.sock.Close()
     sendFormatObj = sendformat.SendFormat(jsonOutput)

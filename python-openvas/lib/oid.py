@@ -25,23 +25,19 @@ class OidInfo:
 	oidCVE = self.familyDict[oidFamily][oid]['CVE']
 	oidBID = self.familyDict[oidFamily][oid]['BID']
 	oidURL = self.familyDict[oidFamily][oid]['URL']
-        oidGrade = self.familyDict[familyOfOid][oidNumber]["grade"]
+        oidGrade = self.familyDict[oidFamily][oid]["grade"]
 	oidInfoDict = { 'family' : oidFamily, 'name' : oidName, 'description' : oidDescription, 'CVE' : oidCVE, 'BID' : oidBID, 'URL' : oidURL, 'grade' : oidGrade}
 	return(oidInfoDict)
 
-    def FamilyToScan(self, family):
+    def FamilyToScan(self, familyList):
 	"""
 	    It puts the oid of the families to scan according to family value:
-            family = None            --> Scan all families known
-            family = DEFAULT_FAMILY  --> Scan default families
-            family = [General, ...]  --> Scan families specified
+            familyList = None            --> Scan all families known
+            familyList = DEFAULT_FAMILY  --> Scan default families
+            familyList = [General, ...]  --> Scan families specified
 	"""
-	if family == None: #all families
+	if familyList == None: #all families
 	    oidListFamily = [ family.keys() for family in self.familyDict.values() ]
 	else: #DEFAULT_FAMILY or [General, ...]
-	    oidListFamily = [ family.keys() for (name, family) in self.familyDict.items() if name in familyScan]
+	    oidListFamily = [ family.keys() for (name, family) in self.familyDict.items() if name in familyList]
 	return([ oid for family in oidListFamily for oid in family ])
-
-    @staticmethod
-    def from_otp(raw):
-       pass 

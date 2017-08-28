@@ -31,7 +31,7 @@ class ParseScan:
 	"""
 	motivParsed = motiv.split("<|> ")
 	oidNumber = motivParsed[4].strip()
-	oidInfoDict = oidObj.get(oidNumber)
+	oidInfoDict = self.oidObj.get(oidNumber)
 	bodyDict = {
 "target" : self.target ,
 "plugin" : {

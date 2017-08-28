@@ -1,3 +1,4 @@
+import textwrap
 from . import color
 
 class Blacklist:
@@ -33,15 +34,16 @@ class Blacklist:
         print(color.GREEN + 'Blacklisted OID information :' + color.END)
         for oid in self.content:
             try:
-                oidinfo.get(oid)
-                message = """
-** {0} , {1} **
-* Family of Vulnerability : {2}
-* CVE : {3}
-* BID : {4}
-* URL : {5}
-* Description: {6}""".format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
-                print(message)
+                d = oidinfo.get(oid)
+                message = '''
+                ** {0} , {1} **
+                * Family of Vulnerability : {2}
+                * CVE : {3}
+                * BID : {4}
+                * URL : {5}
+                * Grade : {6}
+                * Description: {7}\n'''.format(d['name'], oid, d['family'], d['CVE'], d['BID'], d['URL'], d['grade'], d['description'])
+                print(textwrap.dedent(message))
             except KeyError:
                 print(color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancient or wrong plugin.' + color.END)
         return 0
