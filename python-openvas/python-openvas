@@ -69,7 +69,7 @@ if args.target:
         if args.family != DEFAULT_FAMILY:
             print('--all and --family can\'t be used at the same time')
             sys.exit(1)
-    oidList = oidObj.FamilyToScan(args.family)
+    oidList = oidObj.setFamilyToScan(args.family, args.blacklist_ignore)
     jsonOutput = otp.RunScan(ipTarget,args.verbose,oidList, familyDict)
     otp.sock.Close()
     sendFormatObj = sendformat.SendFormat(jsonOutput)

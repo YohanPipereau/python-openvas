@@ -1,4 +1,4 @@
-import color
+import color, blacklist
 
 class OidInfo:
 
@@ -29,7 +29,7 @@ class OidInfo:
 	oidInfoDict = { 'family' : oidFamily, 'name' : oidName, 'description' : oidDescription, 'CVE' : oidCVE, 'BID' : oidBID, 'URL' : oidURL, 'grade' : oidGrade}
 	return(oidInfoDict)
 
-    def FamilyToScan(self, familyList):
+    def setFamilyToScan(self, familyList, blacklist_ignore):
 	"""
 	    It puts the oid of the families to scan according to family value:
             familyList = None            --> Scan all families known
@@ -40,4 +40,9 @@ class OidInfo:
 	    oidListFamily = [ family.keys() for family in self.familyDict.values() ]
 	else: #DEFAULT_FAMILY or [General, ...]
 	    oidListFamily = [ family.keys() for (name, family) in self.familyDict.items() if name in familyList]
-	return([ oid for family in oidListFamily for oid in family ])
+	oidList = [ oid for family in oidListFamily for oid in family ]
+	if blacklist_ignore:
+            return(oidList)
+        else:
+            blacklist_ = blacklist.Blacklist()
+            return(blacklist_.removeBlacklistedOid(oidList))

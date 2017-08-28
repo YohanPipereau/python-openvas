@@ -47,3 +47,6 @@ class Blacklist:
             except KeyError:
                 print(color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancient or wrong plugin.' + color.END)
         return 0
+
+    def removeBlacklistedOid(self, oidList):
+        return(list(set(oidList) - set(self.content)))
