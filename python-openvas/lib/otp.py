@@ -45,9 +45,9 @@ class OTP:
 	if os.path.isfile('conf/nvtchecksum.conf'):
 	    with open('conf/nvtchecksum.conf', 'r') as nvt_checksum_file:
 		nvt_checksum_file = nvt_checksum_file.read()
-	    self.sock.Send("\n")
-	    test = self.sock.Receive()
 	    if nvt_checksum_file == nvt_checksum:
+	        self.sock.Send("\n")
+	        test = self.sock.Receive()
 	        with open('conf/currentnvt.json', 'r') as nvt_dict_file:
 	            familyDict = json.load(nvt_dict_file)
 		return(familyDict)

@@ -37,7 +37,7 @@ class ParseOid():
 		self._ParserLine(line)
 
     def _ParserLine(self,line):
-        oidList=line.split(" <|> ")
+        oidList = line.split(" <|> ")
         if len(oidList) == 10 :
 	    oidNumber = oidList[0]
 	    oidName = oidList[1]

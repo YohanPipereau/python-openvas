@@ -18,19 +18,16 @@ class SendFormat:
 	for k in range(len(tmpDict)-1):
 	    d = json.loads(tmpDict[k]['body'])
 	    if d['plugin']['type'] in tagList:
-		report += """
-		***** {0} :
-		-OID: {1} + 
-		-Name: {2} 
-		-Danger (/10): {3}
-		-Family: {4}
-		-CVE: {5}
-		-BID: {6}
-		{7}
-		{8}
-                """.format(d['plugin']['type'], d['plugin']['oid'], d['plugin']['name'], d['plugin']['grade'], d['plugin']['family'], d['plugin']['CVE'], d['plugin']['BID'], d['plugin']['URL'], d['plugin']['message'])
-        print(textwrap.dedent(report))
-        return(textwrap.dedent(report))
+		report +=  "\n***** %s :\n"     % d['plugin']['type']
+		report += "-OID: %s\n"          % d['plugin']['oid']
+		report += "-Name: %s\n"         % d['plugin']['name']
+		report += "-Danger (/10): %s\n" % d['plugin']['grade']
+		report += "-Family: %s\n"       % d['plugin']['family']
+		report += "-CVE: %s\n"          % d['plugin']['CVE']
+		report += "-BID: %s\n"          % d['plugin']['BID']
+		report += "%s\n"                % d['plugin']['URL']
+		report += "%s\n"                % d['plugin']['message']
+        return(report)
    
     def SetHeaders(self, email_subject, email_from, destinationAddr):
 	msg = self.BuildReport(tagList=['ALARM'])

@@ -18,11 +18,11 @@ class ParseScan:
             Create Template Dictionnary which respects Flume default template.
         """
 	templateDict = {
-'headers' : {
-	'timestamp' : str(int(time.time())) ,
-	'host' : socket.gethostname()
-	}
-}
+            'headers' : {
+	        'timestamp' : str(int(time.time())) ,
+                'host' : socket.gethostname()
+	     }
+        }
 	return templateDict
 
     def _CreateBody(self,motiv):
@@ -33,13 +33,13 @@ class ParseScan:
 	oidNumber = motivParsed[4].strip()
 	oidInfoDict = self.oidObj.get(oidNumber)
 	bodyDict = {
-"target" : self.target ,
-"plugin" : {
-        "oid" : oidNumber,
-        "message" : str(motivParsed[3]),
-        "type": "LOG" if "LOG <|>" in motiv else "ALARM"
-	}
-}
+            "target" : self.target ,
+            "plugin" : {
+                "oid" : oidNumber,
+                "message" : str(motivParsed[3]),
+                "type": "LOG" if "LOG <|>" in motiv else "ALARM"
+	     }
+        }
 	bodyDict['plugin'].update(oidInfoDict)
 	return bodyDict
 
