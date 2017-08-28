@@ -6,9 +6,8 @@ class OTP:
 	This module handles OTP communication with the scanner.
     """
 
-    def __init__(self, oidTimeout, unixsocket_path):
+    def __init__(self, unixsocket_path):
         self.sock = otpsocket.OTPSocket(unixsocket_path)
-	self.oidTimeout = oidTimeout
 
     def GetNVTInfo(self):
 	self.sock.Send('CLIENT <|> NVT_INFO <|> CLIENT\n')

@@ -24,11 +24,6 @@
     --------
     Please make sure flume channel capacity are big enough to send a big json
     in case there are lot of vulnerabilities.
-
-    main module:
-    ------------
-    This aims at parsing the CLI args, and runing the different functions.
-
 """
 
 
@@ -52,12 +47,8 @@ parser.add_argument('--no-file', help="No Report file is output", dest="outputFi
 parser.add_argument('-o', '--output-directory', metavar="/opt/openvas/reports", type=str, nargs=1, help="Write the report on the machine directory..", dest="outputDirPath", default='/opt/openvas/reports')
 parser.add_argument('-s', '--socket-path', metavar="/var/run/openvassd.sock", type=str, nargs=1, help="Define OpenVAS scanner socket path...", dest="unixsocket_path", default='/var/run/openvassd.sock')
 parser.add_argument('-v', '--verbose', help="Verbose mode. Output the OTP info in the shell.", dest="verbose",default=False,action='store_true')
-parser.add_argument('--oid-timeout', type=int, nargs=1, help="Set a timeout for the retrieval of oid. Default is 3s.", dest="oid_timeout",default=3)
 parser.add_argument('--version', action='version', version='%(prog)s {}'.format(__version__))
-parser.add_argument('--blacklist-info', help="Print information about blacklisted oid", dest="blacklist_info", action='store_true')
 parser.add_argument('--blacklist-ignore', help="Ignore blacklisted oid from blacklsit.conf", dest="blacklist_ignore", action='store_true')
-parser.add_argument('--blacklist-add',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Add the oid to blacklist.conf", dest="blacklist_add")
-parser.add_argument('--blacklist-remove',metavar='1.3.6.1.4.1.25623.1.0.80110 1.3.6.1.4.1.25623.1.0.80111', nargs="+", help="Remove the oid from blacklist.conf", dest="blacklist_remove")
 
 args = parser.parse_args()
 
@@ -65,18 +56,9 @@ if args.verbose and not args.target:
     print(color.RED + 'Missing target option !' + color.END)
     sys.exit(0)
 
-if args.blacklist_remove:
-    blacklist = blacklist.Blacklist()
-    blacklist.RemoveOid(args.blacklist_remove)
-    sys.exit(0)
-elif args.blacklist_add:
-    blacklist = blacklist.Blacklist()
-    blacklist.AddOid(args.blacklist_add)
-    sys.exit(0)
-
-otp = otp.OTP(args.oid_timeout, args.unixsocket_path)
+otp = otp.OTP(args.unixsocket_path)
 familyDict = otp.ListFamilies()
-oidObj = oid.Oid(familyDict)
+oidObj = oid.OidInfo(familyDict)
 
 if args.target:
     isIp = iptool.IPTool(args.target[0])#test if correct ip.
@@ -98,8 +80,6 @@ if args.target:
         sendFormatObj.SendEmail(args.email_from,args.email)
     if args.outputFile:
 	sendFormatObj.WriteFile(args.outputDirPath)
-elif args.blacklist_info:
-    oidObj.BlacklistInfo()
 elif args.list_families:
     print(familyDict.keys())
 otp.sock.Close()
