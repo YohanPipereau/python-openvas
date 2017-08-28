@@ -1,50 +1,35 @@
-import color, oid
+from . import color
 
-class BlacklistTools:
+class Blacklist:
 
     def __init__(self):
-	pass
+        with open('conf/blacklist.conf', 'r') as blacklistFile:
+            self.content = [line.strip() for line in blacklistFile.readlines()]
 
     def AddOid(self, oidList):
 	"""
 	    Function used to add a new oid to conf/blacklist.conf.
 	"""
-	for oid in oidList:
-	    isFound, _ = self.SearchOid(oid)
-	    if isFound:
-	       print(color.RED + oid.strip() + ' Already in blacklist.conf.' + color.END) 
-	    else:
-		with open('conf/blacklist.conf', 'a') as blacklistFile:
-		    blacklistFile.write(oid + '\n') 
-		print(color.GREEN + oid.strip() + ' added to blacklist.conf' + color.END)
-	return 0
+        self.content = sorted(set(self.content) + set(oidList)) #set don't duplicate an element
+        with open('conf/blacklist.conf', 'w') as blacklistFile:
+            blacklistFile.write('\n'.join(self.content))
 
     def RemoveOid(self, oidList):
 	"""
 	    Function used to remove an oid in conf/blacklist.conf
 	"""
-	for oid in oidList:
-	    isFound , index = self.SearchOid(oid)
-	    if isFound:
-		with open('conf/blacklist.conf', 'r') as blacklistFile:
-		    wholeFile = blacklistFile.readlines()
-		wholeFile.pop(index)
-		with open('conf/blacklist.conf', 'w+') as blacklistFile:
-		    for line in wholeFile:
-			blacklistFile.write(line)
-		print(color.GREEN + oid.strip() + ' removed from blacklist.conf' + color.END)
-	    else:
-		print(color.RED + oid.strip() + ' is not in blacklist.conf' + color.END)
+        self.content = sorted(set(self.content) - set(oidList))
+        with open('conf/blacklist.conf', 'w') as blacklistFile:
+            blacklistFile.write('\n'.join(self.content))
 
-    def SearchOid(self, oid):
+    def BlacklistInfo(self, oidinfo):
         """
-            Search oid in conf/blacklist.conf. Return True/False if Found/not found
-            and also position of oid in File.
+            Print Information about blacklisted OID.
         """
-        with open('conf/blacklist.conf', 'r') as blacklistFile:
-           blacklist = blacklistFile.readlines()
-        for rank in range(len(blacklist)):
-            if blacklist[rank].strip() == oid.strip():
-                return True, rank
-        return False, None
-
+        print(color.GREEN + 'Blacklisted OID information :' + color.END)
+        for oid in self.content:
+            try:
+                oidinfo.get(oid)
+            except KeyError:
+                print(color.BLUE + oid.strip() + ' is blacklisted but can be removed safely because it is an ancient or wrong plugin.' + color.END)
+        return 0
