@@ -54,6 +54,4 @@ class ParseOid():
                 self.familyDict.update({ oidFamily : {oidNumber : { "name" : oidName, "description" : oidDescription, "CVE" : oidCVE , "BID" : oidBID , "URL" : oidURL, 'grade' : oidCVSSScore}}})
         else:
             raise Exception("Error! oidList has a size different of 10 characters.")
-            sys.exit(2)
-
-
+            sys.exit(-1)

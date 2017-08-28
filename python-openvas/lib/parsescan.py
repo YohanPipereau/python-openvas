@@ -10,9 +10,8 @@ class ParseScan:
     def __init__(self,target,familyDict):
         self.target = target
         self.report = ""
-        self.familyDict = familyDict #required for  name & description of plugin oid
         self.jsonDict = [] #jsonDict is an array containing the Json Dictionnary
-	self.oidObj = oid.Oid(familyDict)
+	self.oidObj = oid.OidInfo(familyDict)
 
     def _CreateTemplate(self):
         """
@@ -32,22 +31,16 @@ class ParseScan:
 	"""
 	motivParsed = motiv.split("<|> ")
 	oidNumber = motivParsed[4].strip()
-	familyOfOid = self.oidObj.SearchFamily(oidNumber)
+	oidInfoDict = oidObj.get(oidNumber)
 	bodyDict = {
 "target" : self.target ,
 "plugin" : {
-        "name" : self.familyDict[familyOfOid][oidNumber]["name"],
-        "description" : self.familyDict[familyOfOid][oidNumber]["description"],
-	"family" : familyOfOid,
         "oid" : oidNumber,
-        "CVE" : self.familyDict[familyOfOid][oidNumber]["CVE"],
-        "BID" : self.familyDict[familyOfOid][oidNumber]['BID'],
-        "URL" : self.familyDict[familyOfOid][oidNumber]["URL"],
-        "grade" : self.familyDict[familyOfOid][oidNumber]["grade"],
         "message" : str(motivParsed[3]),
         "type": "LOG" if "LOG <|>" in motiv else "ALARM"
 	}
 }
+	bodyDict['plugin'].update(oidInfoDict)
 	return bodyDict
 
     def AddLine(self,outputScanLine,verbose):
@@ -81,4 +74,3 @@ class ParseScan:
 	    self.pbar.finish()
 	jsonOutput = json.dumps(self.jsonDict)	
 	return jsonOutput
-

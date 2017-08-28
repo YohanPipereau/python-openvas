@@ -25,15 +25,9 @@ class OidInfo:
 	oidCVE = self.familyDict[oidFamily][oid]['CVE']
 	oidBID = self.familyDict[oidFamily][oid]['BID']
 	oidURL = self.familyDict[oidFamily][oid]['URL']
-	message = """
-** {0} , {1} **
-* Family of Vulnerability : {2}
-* CVE : {3}
-* BID : {4}
-* URL : {5}
-* Description: {6}""".format(oidName, oidNumber, oidFamily, oidCVE, oidBID, oidURL, oidDescription)
-		print(message)
-#TODO: return dictionaire
+        oidGrade = self.familyDict[familyOfOid][oidNumber]["grade"]
+	oidInfoDict = { 'family' : oidFamily, 'name' : oidName, 'description' : oidDescription, 'CVE' : oidCVE, 'BID' : oidBID, 'URL' : oidURL, 'grade' : oidGrade}
+	return(oidInfoDict)
 
     def FamilyToScan(self, family):
 	"""
