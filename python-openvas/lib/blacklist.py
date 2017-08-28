@@ -10,9 +10,12 @@ class Blacklist:
 	"""
 	    Function used to add a new oid to conf/blacklist.conf.
 	"""
-        self.content = sorted(set(self.content) + set(oidList)) #set don't duplicate an element
+        fileContent = set(self.content)
+	fileContent.update(set(oidList)) #set don't duplicate an element
+	self.content = sorted(fileContent)
         with open('conf/blacklist.conf', 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
+	print(color.GREEN + str(oidList) + ' added to blacklist.conf.' + color.END)
 
     def RemoveOid(self, oidList):
 	"""
@@ -21,6 +24,7 @@ class Blacklist:
         self.content = sorted(set(self.content) - set(oidList))
         with open('conf/blacklist.conf', 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
+	print(color.GREEN + str(oidList) + ' removed from blacklist.conf.' + color.END)
 
     def BlacklistInfo(self, oidinfo):
         """

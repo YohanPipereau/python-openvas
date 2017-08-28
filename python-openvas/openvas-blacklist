@@ -12,7 +12,7 @@
     openvas-blacklist
 
 """
-import argparse
+import argparse, sys
 from lib import __version__, blacklist, oid, otp
 
 parser = argparse.ArgumentParser(description="openvas-blacklsit menu")
@@ -37,3 +37,4 @@ elif args.blacklist_info:
     familyDict = otp.ListFamilies()
     oidinfo = oid.OidInfo(familyDict)
     blacklist.BlacklistInfo(oidinfo)
+    sys.exit(0)
