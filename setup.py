@@ -23,7 +23,7 @@ setup(name='python-openvas',
       packages = ['python-openvas'],
       py_modules = ['python-openvas'],
       install_requires = ['progressbar'],
-      data_files = [('config', ['conf/blacklist.conf', 'conf/scan.conf']),
-      ('reports', ['/opt/openvas/reports'])
+      data_files = [('conf', ['conf/blacklist.conf', 'conf/scan.conf']),
+      ('/opt/openvas/reports', [''])
       ],
       )
