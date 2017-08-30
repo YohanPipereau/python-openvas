@@ -4,26 +4,26 @@ from . import color
 class Blacklist:
 
     def __init__(self):
-        with open('conf/blacklist.conf', 'r') as blacklistFile:
+        with open('/etc/python-openvas/blacklist.conf', 'r') as blacklistFile:
             self.content = [line.strip() for line in blacklistFile.readlines()]
 
     def AddOid(self, oidList):
 	"""
-	    Function used to add a new oid to conf/blacklist.conf.
+	    Function used to add a new oid to /etc/blacklist.conf.
 	"""
         fileContent = set(self.content)
 	fileContent.update(set(oidList)) #set don't duplicate an element
 	self.content = sorted(fileContent)
-        with open('conf/blacklist.conf', 'w') as blacklistFile:
+        with open('/etc/python-openvas/blacklist.conf', 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
 	print(color.GREEN + str(oidList) + ' added to blacklist.conf.' + color.END)
 
     def RemoveOid(self, oidList):
 	"""
-	    Function used to remove an oid in conf/blacklist.conf
+	    Function used to remove an oid in /etc/blacklist.conf
 	"""
         self.content = sorted(set(self.content) - set(oidList))
-        with open('conf/blacklist.conf', 'w') as blacklistFile:
+        with open('/etc/python-openvas/blacklist.conf', 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
 	print(color.GREEN + str(oidList) + ' removed from blacklist.conf.' + color.END)
 

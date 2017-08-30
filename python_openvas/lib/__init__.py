@@ -1,6 +1,5 @@
-__version__ = '0.1.0'
+__version__ = '1.0.0'
 
-#What is that?
 from .blacklist import Blacklist
 from .oid import OidInfo
 from .iptool import IPTool

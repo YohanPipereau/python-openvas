@@ -29,9 +29,9 @@ class OTP:
 	self.sock.Receive()
 	oid = parseoid.ParseOid() #Let's parse the answer of the scanner
 	oid.Parser(rawOid)
-        with open('conf/currentnvt.json', 'w+') as nvt_dict_file:
+        with open('/etc/python-openvas/currentnvt.json', 'w+') as nvt_dict_file:
 	    json.dump(oid.familyDict, nvt_dict_file)
-	with open('conf/nvtchecksum.conf', 'w+') as nvt_checksum_file:
+	with open('/etc/python-openvas/nvtchecksum.conf', 'w+') as nvt_checksum_file:
 	    nvt_checksum_file.write(nvt_checksum)
 	return(oid.familyDict)
  
@@ -42,13 +42,13 @@ class OTP:
 	"""
 	print(color.GREEN + "Wait, we are retrieving the families and oid of the vulnerabilities ..." + color.END)
 	nvt_checksum = self.GetChecksum()
-	if os.path.isfile('conf/nvtchecksum.conf'):
-	    with open('conf/nvtchecksum.conf', 'r') as nvt_checksum_file:
+	if os.path.isfile('/etc/python-openvas/nvtchecksum.conf'):
+	    with open('/etc/python-openvas/nvtchecksum.conf', 'r') as nvt_checksum_file:
 		nvt_checksum_file = nvt_checksum_file.read()
 	    if nvt_checksum_file == nvt_checksum:
 	        self.sock.Send("\n")
 	        test = self.sock.Receive()
-	        with open('conf/currentnvt.json', 'r') as nvt_dict_file:
+	        with open('/etc/python-openvas/currentnvt.json', 'r') as nvt_dict_file:
 	            familyDict = json.load(nvt_dict_file)
 		return(familyDict)
 	    else:
@@ -65,7 +65,7 @@ class OTP:
 	try:
 	    print(color.GREEN + "Please Wait, while we scan the device ..." + color.END)
 	    oidString = ';'.join(oidList)
-	    with open('conf/scan.conf') as f:
+	    with open('/etc/python-openvas/scan.conf') as f:
 		confFile = f.read() 
 	    message = 'CLIENT <|> PREFERENCES <|>\nplugin_set <|>' + oidString + "\n" + confFile + str(len(target)) + "\n" + target +"\n"
 	    self.sock.Send(message)
