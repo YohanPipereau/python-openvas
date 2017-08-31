@@ -2,9 +2,10 @@ import textwrap
 from . import color
 
 class Blacklist:
+    blacklist_filepath = '/opt/python-openvas/etc/blacklist.conf'
 
     def __init__(self):
-        with open('/etc/python-openvas/blacklist.conf', 'r') as blacklistFile:
+        with open(self.blacklist_filepath, 'r') as blacklistFile:
             self.content = [line.strip() for line in blacklistFile.readlines()]
 
     def AddOid(self, oidList):
@@ -14,7 +15,7 @@ class Blacklist:
         fileContent = set(self.content)
 	fileContent.update(set(oidList)) #set don't duplicate an element
 	self.content = sorted(fileContent)
-        with open('/etc/python-openvas/blacklist.conf', 'w') as blacklistFile:
+        with open(self.blacklist_filepath, 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
 	print(color.GREEN + str(oidList) + ' added to blacklist.conf.' + color.END)
 
@@ -23,7 +24,7 @@ class Blacklist:
 	    Function used to remove an oid in /etc/blacklist.conf
 	"""
         self.content = sorted(set(self.content) - set(oidList))
-        with open('/etc/python-openvas/blacklist.conf', 'w') as blacklistFile:
+        with open(self.blacklist_filepath, 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
 	print(color.GREEN + str(oidList) + ' removed from blacklist.conf.' + color.END)
 
