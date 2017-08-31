@@ -1,0 +1,20 @@
+SPECFILE=SPECS/python-openvas.spec
+PACKAGE=$(shell grep -s '^Name'	$(SPECFILE) | sed -e 's/Name: *//')
+PKGNAME=$(PACKAGE)-$(VERSION)
+TARFILE=$(PKGNAME).tgz
+
+archive:
+	mkdir -p SOURCES
+	@(git archive --format=tar --prefix=$(PKGNAME)/ $(VERSION) python_openvas/lib/ python_openvas/openvas-blacklist python_openvas/python-openvas python_openvas/conf/blacklist.conf python_openvas/conf/scan.conf magicredis setup.py | gzip) > SOURCES/$(PKGNAME).tgz
+
+fix_spec_version:
+	sed -i -e "s/%{ver}/$(VERSION)/g" SPECS/*.spec
+
+clean:
+	rm *.tgz
+
+srpm:   archive fix_spec_version
+	rpmbuild -bs --define "dist .el7.centos" --define '_topdir $(PWD)' --define "ver $(VERSION)" ${SPECFILE}
+
+rpm:   archive fix_spec_version
+	rpmbuild -ba --define "dist .el7.centos" --define '_topdir $(PWD)' --define "ver $(VERSION)" ${SPECFILE}
