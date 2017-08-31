@@ -1,4 +1,4 @@
-__version__ = '1.0.0'
+__version__ = '0.1.0'
 
 from .blacklist import Blacklist
 from .oid import OidInfo
