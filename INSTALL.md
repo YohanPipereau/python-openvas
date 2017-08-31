@@ -22,7 +22,6 @@ python setup.py install
 
 If you want to uninstall, the best would be to remove the following directories/files:
 /opt/python-openvas
-/etc/python-openvas
 /usr/bin/openvas-blacklist
 /usr/bin/python-openvas
 /usr/bin/magicredis
