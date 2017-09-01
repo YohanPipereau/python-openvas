@@ -75,12 +75,12 @@ if args.target:
     otp.sock.Close()
     sendFormatObj = sendformat.SendFormat(jsonOutput)
     if args.json:
-	sendFormatObj.SendFlume(args.flume_server)
+        sendFormatObj.SendFlume(args.flume_server)
     if args.email:
-	sendFormatObj.SetHeaders(args.email_subject,args.email_from,args.email)
+        sendFormatObj.SetHeaders(args.email_subject,args.email_from,args.email)
         sendFormatObj.SendEmail(args.email_from,args.email)
     if args.outputFile:
-	sendFormatObj.WriteFile(args.outputDirPath)
+        sendFormatObj.WriteFile(args.outputDirPath)
 elif args.list_families:
     print(familyDict.keys())
 otp.sock.Close()

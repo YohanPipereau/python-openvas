@@ -7,7 +7,7 @@ Version:        %{ver}
 Release:        1%{?dist}
 Summary:        Python wrapper for OpenVAS Scanner
 Vendor:         CERN
-License:        GPL+
+License:        GPL3
 Source:         %{name}-%{version}.tgz
 BuildArch:      noarch
 BuildRequires:  python-devel

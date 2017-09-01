@@ -3,7 +3,7 @@ import color
 
 class IPTool:
     """
-	Class to check wether the ip is correct or not in the args of main module
+        Class to check wether the ip is correct or not in the args of main module
     """
 
     def __init__(self,address):
@@ -15,7 +15,7 @@ class IPTool:
             Entry of the type 0.0 are automatically conpleted to 0.0.0.0.
         """
         self.address = socket.gethostbyname(self.address)
-	self.ValidIP() #is the IP received a good IP
+        self.ValidIP() #is the IP received a good IP
 
     def _ValidIP(self):
         """
@@ -38,5 +38,4 @@ class IPTool:
             self._ValidDN()
         except:
             self._ValidIP()
-	return(self.address)	
-        
+        return(self.address)

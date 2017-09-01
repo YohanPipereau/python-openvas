@@ -31,23 +31,23 @@ class ParseOid():
     def Parser(self,scanData):
         scanList = scanData.splitlines()
         if not 'PLUGIN_LIST <|>' in scanList[0]:
-	    raise Exception('PLUGIN_LIST expected before retrieving OID') 
+            raise Exception('PLUGIN_LIST expected before retrieving OID')
         else:
-	    for line in scanList[1:]:
-		self._ParserLine(line)
+            for line in scanList[1:]:
+                self._ParserLine(line)
 
     def _ParserLine(self,line):
         oidList = line.split(" <|> ")
         if len(oidList) == 10 :
-	    oidNumber = oidList[0]
-	    oidName = oidList[1]
-	    oidFamily = oidList[4]
-	    oidCVE = oidList[6]
-	    oidBID = oidList[7]	    
-	    oidURL = oidList[8]
-	    oidDescription = oidList[9]
-	    regex = r'cvss_base=(?P<cvss>.[\d\.\d]+)'
-	    oidCVSSScore = re.findall(regex,oidList[9])[0]
+            oidNumber = oidList[0]
+            oidName = oidList[1]
+            oidFamily = oidList[4]
+            oidCVE = oidList[6]
+            oidBID = oidList[7]
+            oidURL = oidList[8]
+            oidDescription = oidList[9]
+            regex = r'cvss_base=(?P<cvss>.[\d\.\d]+)'
+            oidCVSSScore = re.findall(regex,oidList[9])[0]
             if oidFamily in self.familyDict.keys():# oid family already in dict
                     self.familyDict[oidFamily].update( {oidNumber : {"name" : oidName , "description" : oidDescription , "CVE" : oidCVE , "BID" : oidBID, "URL" : oidURL, 'grade' : oidCVSSScore}})
             else: #oid family appended to dict

@@ -11,37 +11,37 @@ class ParseScan:
         self.target = target
         self.report = ""
         self.jsonDict = [] #jsonDict is an array containing the Json Dictionnary
-	self.oidObj = oid.OidInfo(familyDict)
+        self.oidObj = oid.OidInfo(familyDict)
 
     def _CreateTemplate(self):
         """
             Create Template Dictionnary which respects Flume default template.
         """
-	templateDict = {
+        templateDict = {
             'headers' : {
-	        'timestamp' : str(int(time.time())) ,
+                'timestamp' : str(int(time.time())) ,
                 'host' : socket.gethostname()
-	     }
+             }
         }
-	return templateDict
+        return templateDict
 
     def _CreateBody(self,motiv):
-	"""
-	    Create Body Dictionnary inserted in templateDict['body'] as JSON.
-	"""
-	motivParsed = motiv.split("<|> ")
-	oidNumber = motivParsed[4].strip()
-	oidInfoDict = self.oidObj.get(oidNumber)
-	bodyDict = {
+        """
+            Create Body Dictionnary inserted in templateDict['body'] as JSON.
+        """
+        motivParsed = motiv.split("<|> ")
+        oidNumber = motivParsed[4].strip()
+        oidInfoDict = self.oidObj.get(oidNumber)
+        bodyDict = {
             "target" : self.target ,
             "plugin" : {
                 "oid" : oidNumber,
                 "message" : str(motivParsed[3]),
                 "type": "LOG" if "LOG <|>" in motiv else "ALARM"
-	     }
+             }
         }
-	bodyDict['plugin'].update(oidInfoDict)
-	return bodyDict
+        bodyDict['plugin'].update(oidInfoDict)
+        return bodyDict
 
     def AddLine(self,outputScanLine,verbose):
         """
@@ -49,28 +49,28 @@ class ParseScan:
             les logs du scan.
             Afin de correspondre au JsonHandler de Flume, voici sa forme
         """
-	if verbose:
-	    def print_verbose(x) : print(x)
-	else:
-	    def print_verbose(x): None
-	print_verbose(outputScanLine)
+        if verbose:
+            def print_verbose(x) : print(x)
+        else:
+            def print_verbose(x): None
+        print_verbose(outputScanLine)
         scanList = outputScanLine.split("SERVER <|>")
         for motiv in scanList:
-	    if "LOG <|>" in motiv or "ALARM <|>" in motiv:
-		templateDict = self._CreateTemplate()
-		self.jsonDict.append(templateDict.copy())
-		bodyDict = self._CreateBody(motiv)
-		bodyJson = json.dumps(bodyDict)
+            if "LOG <|>" in motiv or "ALARM <|>" in motiv:
+                templateDict = self._CreateTemplate()
+                self.jsonDict.append(templateDict.copy())
+                bodyDict = self._CreateBody(motiv)
+                bodyJson = json.dumps(bodyDict)
                 self.jsonDict[len(self.jsonDict)-1]["body"] = bodyJson
-	    elif 'STATUS <|>' in motiv and not verbose:
-		current_no_of_completed_tests, total_no_of_tests = motiv.split(' <|> ')[2].split('/')
-		if int(current_no_of_completed_tests) == 0:
-		    self.pbar = progressbar.ProgressBar(maxval = int(total_no_of_tests)).start()
-		self.pbar.update(int(current_no_of_completed_tests))
+            elif 'STATUS <|>' in motiv and not verbose:
+                current_no_of_completed_tests, total_no_of_tests = motiv.split(' <|> ')[2].split('/')
+                if int(current_no_of_completed_tests) == 0:
+                    self.pbar = progressbar.ProgressBar(maxval = int(total_no_of_tests)).start()
+                self.pbar.update(int(current_no_of_completed_tests))
         return 0
 
     def FinalOutput(self,verbose):
-	if not verbose:
-	    self.pbar.finish()
-	jsonOutput = json.dumps(self.jsonDict)	
-	return jsonOutput
+        if not verbose:
+            self.pbar.finish()
+        jsonOutput = json.dumps(self.jsonDict)
+        return jsonOutput

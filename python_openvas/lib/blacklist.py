@@ -9,24 +9,24 @@ class Blacklist:
             self.content = [line.strip() for line in blacklistFile.readlines()]
 
     def AddOid(self, oidList):
-	"""
-	    Function used to add a new oid to /etc/blacklist.conf.
-	"""
+        """
+            Function used to add a new oid to /etc/blacklist.conf.
+        """
         fileContent = set(self.content)
-	fileContent.update(set(oidList)) #set don't duplicate an element
-	self.content = sorted(fileContent)
+        fileContent.update(set(oidList)) #set don't duplicate an element
+        self.content = sorted(fileContent)
         with open(self.blacklist_filepath, 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
-	print(color.GREEN + str(oidList) + ' added to blacklist.conf.' + color.END)
+        print(color.GREEN + str(oidList) + ' added to blacklist.conf.' + color.END)
 
     def RemoveOid(self, oidList):
-	"""
-	    Function used to remove an oid in /etc/blacklist.conf
-	"""
+        """
+            Function used to remove an oid in /etc/blacklist.conf
+        """
         self.content = sorted(set(self.content) - set(oidList))
         with open(self.blacklist_filepath, 'w') as blacklistFile:
             blacklistFile.write('\n'.join(self.content))
-	print(color.GREEN + str(oidList) + ' removed from blacklist.conf.' + color.END)
+        print(color.GREEN + str(oidList) + ' removed from blacklist.conf.' + color.END)
 
     def BlacklistInfo(self, oidinfo):
         """
