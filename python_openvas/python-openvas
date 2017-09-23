@@ -42,7 +42,7 @@ parser.add_argument('-j', '--json', help='Output the report in JSON', action='st
 parser.add_argument('--flume-server', metavar='http://localhost:5140/post', help='Specify flume server adress', nargs=1, type=str,default='http://localhost:5140/post', dest='flume_server')
 parser.add_argument('-l', '--list-families', help="List the families available (ex: Windows, Linux, Cisco, etc)", action='store_true')
 parser.add_argument('-e', '--email', metavar="x1@example.com, x2@example.com", type=str, nargs="+", help="Send the report to someone@example.com by email", dest="email")
-parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help="Define the sender of the email report", dest="email_from", default="openvas@cern.ch")
+parser.add_argument('--from', metavar="x1@example.com", type=str, nargs=1, help="Define the sender of the email report", dest="email_from", default="openvas@example.com")
 parser.add_argument('--subject', metavar="Openvas Report", type=str, nargs=1, help="Define the subject of the email. Default is Openvas Report", dest="email_subject", default="Openvas Report")
 parser.add_argument('--no-file', help="No Report file is output", dest="outputFile", action='store_false', default=True)
 parser.add_argument('-o', '--output-directory', metavar="/opt/python-openvas/reports", type=str, nargs=1, help="Write the report on the machine directory..", dest="outputDirPath", default='/opt/openvas/reports')
