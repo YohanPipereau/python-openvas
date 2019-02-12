@@ -12,7 +12,7 @@ setup(name='python-openvas',
       url = 'https://github.com/YohanPipereau/python-openvas',
       license = 'GPL3',
       platforms = 'Linux',
-      install_requires = ['progressbar'], # Dependencies
+      install_requires = ['progressbar', 'requests'], # Dependencies
       keywords=['OpenVAS'], # What does your project relate to?
       #scripts to detect
       scripts=['python_openvas/python-openvas', 'python_openvas/openvas-blacklist', 'magicredis'],
